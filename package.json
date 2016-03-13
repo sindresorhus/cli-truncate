@@ -32,8 +32,8 @@
     "ansi"
   ],
   "dependencies": {
-    "string-width": "^1.0.1",
-    "wrap-ansi": "^2.0.0"
+    "slice-ansi": "0.0.4",
+    "string-width": "^1.0.1"
   },
   "devDependencies": {
     "ava": "*",

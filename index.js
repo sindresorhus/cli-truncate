@@ -1,5 +1,5 @@
 'use strict';
-var wrapAnsi = require('wrap-ansi');
+var sliceAnsi = require('slice-ansi');
 var stringWidth = require('string-width');
 
 module.exports = function (input, columns) {
@@ -25,5 +25,5 @@ module.exports = function (input, columns) {
 		return input;
 	}
 
-	return wrapAnsi(input, columns - 1, {hard: true}).split('\n')[0] + ellipsis;
+	return sliceAnsi(input, 0, columns - 1) + ellipsis;
 };
