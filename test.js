@@ -6,6 +6,7 @@ const mootEscapes = '\u001b[31m\u001b[31m\u001b[31m\u001b[31m';
 
 test(t => {
 	t.is(m('unicorn', 4), 'uni…');
+	t.is(m('unicorn', 4, {position: 'end'}), 'uni…');
 	t.is(m('unicorn', 1), '…');
 	t.is(m('unicorn', 0), '');
 	t.is(m('unicorn', -4), '');
@@ -18,4 +19,8 @@ test(t => {
 	// TODO
 	t.skip.is(m('a\ud83c\ude00b\ud83c\ude00c', 5), 'a\ud83c\ude00b…', 'surrogate pairs');
 	t.skip.is(m('안녕하세요', 3), '안…', 'wide char');
+	t.is(m('unicorn', 5, {position: 'start'}), '…corn');
+	t.is(m('unicorn', 6, {position: 'start'}), '…icorn');
+	t.is(m('unicorn', 5, {position: 'middle'}), 'un…rn');
+	t.is(m('unicorns', 6, {position: 'middle'}), 'uni…ns');
 });
