@@ -4,7 +4,7 @@ var stringWidth = require('string-width');
 
 module.exports = function (input, columns, options) {
 	options = options || {};
-	options.position = options.position || 'end';
+	var position = options.position || 'end';
 
 	var ellipsis = '…';
 
@@ -30,14 +30,14 @@ module.exports = function (input, columns, options) {
 		return input;
 	}
 
-	if (options.position === 'end') {
-		return sliceAnsi(input, 0, columns - 1) + ellipsis;
-	} else if (options.position === 'start') {
+	if (position === 'start') {
 		return ellipsis + sliceAnsi(input, length - columns + 1, length);
-	} else if (options.position === 'middle') {
+	} else if (position === 'middle') {
 		var half = Math.floor(columns / 2);
 		return sliceAnsi(input, 0, half) + ellipsis + sliceAnsi(input, length - (columns - half) + 1, length);
+	} else if (position === 'end') {
+		return sliceAnsi(input, 0, columns - 1) + ellipsis;
 	}
 
-	throw new Error('Expected `options.position` to be either "start", "begin" or "end", got ' + options.position);
+	throw new Error('Expected `options.position` to be either `start`, `middle` or `end`, got ' + position);
 };
