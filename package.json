@@ -1,6 +1,6 @@
 {
   "name": "cli-truncate",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Truncate a string to a specific width in the terminal",
   "license": "MIT",
   "repository": "sindresorhus/cli-truncate",
