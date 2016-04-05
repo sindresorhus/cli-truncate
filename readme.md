@@ -20,6 +20,13 @@ const cliTruncate = require('cli-truncate');
 cliTruncate('unicorn', 4);
 //=> 'uni…'
 
+// truncate at different positions
+cliTruncate('unicorn', 4, {position: 'start'});
+//=> '…orn'
+
+cliTruncate('unicorn', 4, {position: 'middle'});
+//=> 'un…n'
+
 cliTruncate('\u001b[31municorn\u001b[39m', 4);
 //=> '\u001b[31muni\u001b[39m…'
 
@@ -32,7 +39,7 @@ cliTruncate(paragraph, process.stdout.columns));
 
 ## API
 
-### cliTruncate(input, columns)
+### cliTruncate(input, columns, [options])
 
 #### input
 
@@ -45,6 +52,16 @@ Text to truncate.
 Type: `number`
 
 Columns to occupy in the terminal.
+
+#### options
+
+##### position
+
+Type: `string`<br>
+Default: `'end'`<br>
+Values: `'start'`, `'middle'`, `'end'`
+
+Position to truncate the string.
 
 
 ## Related
