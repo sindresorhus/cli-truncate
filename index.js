@@ -2,7 +2,10 @@
 var sliceAnsi = require('slice-ansi');
 var stringWidth = require('string-width');
 
-module.exports = function (input, columns) {
+module.exports = function (input, columns, options) {
+	options = options || {};
+	var position = options.position || 'end';
+
 	var ellipsis = '…';
 
 	if (typeof input !== 'string') {
@@ -21,9 +24,20 @@ module.exports = function (input, columns) {
 		return ellipsis;
 	}
 
-	if (stringWidth(input) <= columns) {
+	var length = stringWidth(input);
+
+	if (length <= columns) {
 		return input;
 	}
 
-	return sliceAnsi(input, 0, columns - 1) + ellipsis;
+	if (position === 'start') {
+		return ellipsis + sliceAnsi(input, length - columns + 1, length);
+	} else if (position === 'middle') {
+		var half = Math.floor(columns / 2);
+		return sliceAnsi(input, 0, half) + ellipsis + sliceAnsi(input, length - (columns - half) + 1, length);
+	} else if (position === 'end') {
+		return sliceAnsi(input, 0, columns - 1) + ellipsis;
+	}
+
+	throw new Error('Expected `options.position` to be either `start`, `middle` or `end`, got ' + position);
 };
