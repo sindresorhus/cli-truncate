@@ -20,7 +20,7 @@ const cliTruncate = require('cli-truncate');
 cliTruncate('unicorn', 4);
 //=> 'uni…'
 
-// truncate at different positions
+// Truncate at different positions
 cliTruncate('unicorn', 4, {position: 'start'});
 //=> '…orn'
 
@@ -30,7 +30,7 @@ cliTruncate('unicorn', 4, {position: 'middle'});
 cliTruncate('\u001b[31municorn\u001b[39m', 4);
 //=> '\u001b[31muni\u001b[39m…'
 
-// truncate the paragraph to the terminal width
+// Truncate the paragraph to the terminal width
 const paragraph = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.';
 cliTruncate(paragraph, process.stdout.columns));
 //=> 'Lorem ipsum dolor sit amet, consectetuer adipiscing…'
@@ -54,6 +54,8 @@ Type: `number`
 Columns to occupy in the terminal.
 
 #### options
+
+Type: `Object`
 
 ##### position
 
