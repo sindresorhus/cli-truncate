@@ -1,4 +1,3 @@
-'use strict';
 const sliceAnsi = require('slice-ansi');
 const stringWidth = require('string-width');
 
