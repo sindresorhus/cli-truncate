@@ -14,7 +14,8 @@
   },
   "scripts": {
     "test": "xo && ava",
-    "prepublish": "webpack --progress --colors --display-error-details --config webpack.config.js"
+    "build": "webpack --progress --colors --display-error-details --config webpack.config.js",
+    "prepublish": "npm run build"
   },
   "files": [
     "index.js"
