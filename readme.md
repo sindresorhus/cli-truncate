@@ -8,7 +8,7 @@ Gracefully handles [ANSI escapes](https://en.wikipedia.org/wiki/ANSI_escape_code
 ## Install
 
 ```
-$ npm install --save cli-truncate
+$ npm install cli-truncate
 ```
 
 
@@ -68,8 +68,8 @@ Type: `Object`
 ##### position
 
 Type: `string`<br>
-Default: `'end'`<br>
-Values: `'start'`, `'middle'`, `'end'`
+Default: `end`<br>
+Values: `start` `middle` `end`
 
 Position to truncate the string.
 
