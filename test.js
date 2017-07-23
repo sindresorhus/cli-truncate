@@ -1,9 +1,6 @@
 import test from 'ava';
 import m from './';
 
-// Because of https://github.com/chalk/slice-ansi/issues/6
-const mootEscapes = '\u001b[31m\u001b[31m\u001b[31m\u001b[31m';
-
 test(t => {
 	t.is(m('unicorn', 4), 'uni…');
 	t.is(m('unicorn', 4, {position: 'end'}), 'uni…');
@@ -13,12 +10,11 @@ test(t => {
 	t.is(m('unicorn', 20), 'unicorn');
 	t.is(m('unicorn', 7), 'unicorn');
 	t.is(m('unicorn', 6), 'unico…');
-	t.is(m('\u001b[31municorn\u001b[39m', 7), '\u001b[31municorn\u001b[39m');
-	t.is(m('\u001b[31municorn\u001b[39m', 1), '…');
-	t.is(m('\u001b[31municorn\u001b[39m', 4), mootEscapes + '\u001b[31muni\u001b[39m…');
-	// TODO
-	// t.skip.is(m('a\ud83c\ude00b\ud83c\ude00c', 5), 'a\ud83c\ude00b…', 'surrogate pairs');
-	// t.skip.is(m('안녕하세요', 3), '안…', 'wide char');
+	t.is(m('\u001B[31municorn\u001B[39m', 7), '\u001B[31municorn\u001B[39m');
+	t.is(m('\u001B[31municorn\u001B[39m', 1), '…');
+	t.is(m('\u001B[31municorn\u001B[39m', 4), '\u001B[31muni\u001B[39m…');
+	t.is(m('a\uD83C\uDE00b\uD83C\uDE00c', 5), 'a\uD83C\uDE00b\uD83C\uDE00…', 'surrogate pairs');
+	t.is(m('안녕하세요', 3), '안…', 'wide char');
 	t.is(m('unicorn', 5, {position: 'start'}), '…corn');
 	t.is(m('unicorn', 6, {position: 'start'}), '…icorn');
 	t.is(m('unicorn', 5, {position: 'middle'}), 'un…rn');

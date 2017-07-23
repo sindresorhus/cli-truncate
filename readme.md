@@ -2,7 +2,7 @@
 
 > Truncate a string to a specific width in the terminal
 
-Gracefully handles [ANSI escapes](https://en.wikipedia.org/wiki/ANSI_escape_code#Colors_and_Styles). Like a string styled with [`chalk`](https://github.com/chalk/chalk).
+Gracefully handles [ANSI escapes](https://en.wikipedia.org/wiki/ANSI_escape_code#Colors_and_Styles). Like a string styled with [`chalk`](https://github.com/chalk/chalk). It also supports Unicode surrogate pairs and fullwidth characters.
 
 
 ## Install
@@ -27,8 +27,16 @@ cliTruncate('unicorn', 4, {position: 'start'});
 cliTruncate('unicorn', 4, {position: 'middle'});
 //=> 'un…n'
 
-cliTruncate('\u001b[31municorn\u001b[39m', 4);
-//=> '\u001b[31muni\u001b[39m…'
+cliTruncate('\u001B[31municorn\u001B[39m', 4);
+//=> '\u001B[31muni\u001B[39m…'
+
+// Truncate Unicode surrogate pairs
+cliTruncate('uni\uD83C\uDE00corn', 5);
+//=> 'uni\uD83C\uDE00…'
+
+// Truncate fullwidth characters
+cliTruncate('안녕하세요', 3);
+//=> '안…'
 
 // Truncate the paragraph to the terminal width
 const paragraph = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.';
