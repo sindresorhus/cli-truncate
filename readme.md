@@ -30,7 +30,7 @@ cliTruncate('unicorn', 4, {position: 'middle'});
 cliTruncate('\u001B[31municorn\u001B[39m', 4);
 //=> '\u001B[31muni\u001B[39m…'
 
-// Truncate unicode surrogate pairs
+// Truncate Unicode surrogate pairs
 cliTruncate('uni\uD83C\uDE00corn', 5);
 //=> 'uni\uD83C\uDE00…'
 
