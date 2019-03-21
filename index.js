@@ -8,8 +8,8 @@ module.exports = (text, columns, options) => {
 		...options
 	};
 
-	const {position} = options;
-	const ellipsis = '…';
+	const {position, space} = options;
+	let ellipsis = '…';
 
 	if (typeof text !== 'string') {
 		throw new TypeError(`Expected \`input\` to be a string, got ${typeof text}`);
@@ -34,16 +34,32 @@ module.exports = (text, columns, options) => {
 	}
 
 	if (position === 'start') {
-		return ellipsis + sliceAnsi(text, length - columns + 1, length);
+		if (space === true) {
+			ellipsis += ' ';
+		}
+
+		return ellipsis + sliceAnsi(input, length - columns + (space ? 2 : 1), length);
 	}
 
 	if (position === 'middle') {
+		if (space === true) {
+			ellipsis = ' ' + ellipsis + ' ';
+		}
+
 		const half = Math.floor(columns / 2);
-		return sliceAnsi(text, 0, half) + ellipsis + sliceAnsi(text, length - (columns - half) + 1, length);
+		return (
+			sliceAnsi(input, 0, half) +
+			ellipsis +
+			sliceAnsi(input, length - (columns - half) + (space ? 3 : 1), length)
+		);
 	}
 
 	if (position === 'end') {
-		return sliceAnsi(text, 0, columns - 1) + ellipsis;
+		if (space === true) {
+			ellipsis = ' ' + ellipsis;
+		}
+
+		return sliceAnsi(input, 0, columns - (space ? 2 : 1)) + ellipsis;
 	}
 
 	throw new Error(`Expected \`options.position\` to be either \`start\`, \`middle\` or \`end\`, got ${position}`);

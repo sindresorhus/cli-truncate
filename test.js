@@ -19,4 +19,7 @@ test('main', t => {
 	t.is(cliTruncate('unicorn', 6, {position: 'start'}), '…icorn');
 	t.is(cliTruncate('unicorn', 5, {position: 'middle'}), 'un…rn');
 	t.is(cliTruncate('unicorns', 6, {position: 'middle'}), 'uni…ns');
+	t.is(cliTruncate('unicorns', 5, {position: 'end', space: true}), 'uni …');
+	t.is(cliTruncate('unicorns', 6, {position: 'start', space: true}), '… orns');
+	t.is(cliTruncate('unicorns', 7, {position: 'middle', space: true}), 'uni … s');
 });
