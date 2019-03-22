@@ -27,6 +27,12 @@ cliTruncate('unicorn', 4, {position: 'start'});
 cliTruncate('unicorn', 4, {position: 'middle'});
 //=> 'un…n'
 
+cliTruncate('unicorns rainbow dragons', 20, {position: 'start', preferTruncationOnSpace: true})
+//=> '…rainbow dragons'
+
+cliTruncate('unicorns rainbow dragons', 20, {position: 'middle', preferTruncationOnSpace: true})
+//=> 'unicorns…dragons'
+
 cliTruncate('\u001B[31municorn\u001B[39m', 4);
 //=> '\u001B[31muni\u001B[39m…'
 
@@ -72,6 +78,13 @@ Default: `end`<br>
 Values: `start` `middle` `end`
 
 Position to truncate the string.
+
+##### preferTruncationOnSpace
+
+Type: `boolean`<br>
+Default: `false`
+
+Truncate the string from a whitespace if it is within 3 characters from the actual breaking point
 
 
 ## Related

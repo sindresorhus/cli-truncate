@@ -1,7 +1,7 @@
 import test from 'ava';
 import m from '.';
 
-test(t => {
+test('tests', t => {
 	t.is(m('unicorn', 4), 'uni…');
 	t.is(m('unicorn', 4, {position: 'end'}), 'uni…');
 	t.is(m('unicorn', 1), '…');
@@ -19,4 +19,10 @@ test(t => {
 	t.is(m('unicorn', 6, {position: 'start'}), '…icorn');
 	t.is(m('unicorn', 5, {position: 'middle'}), 'un…rn');
 	t.is(m('unicorns', 6, {position: 'middle'}), 'uni…ns');
+	t.is(m('unicorns rainbow dragons', 20, {position: 'start', preferTruncationOnSpace: true}), '…rainbow dragons');
+	t.is(m('unicorns rainbow dragons', 20, {position: 'end', preferTruncationOnSpace: true}), 'unicorns rainbow…');
+	t.is(m('unicorns rainbow dragons', 6, {position: 'start', preferTruncationOnSpace: true}), '…agons');
+	t.is(m('unicorns rainbow dragons', 6, {position: 'end', preferTruncationOnSpace: true}), 'unico…');
+	t.is(m('unicorns rainbow dragons', 6, {position: 'middle', preferTruncationOnSpace: true}), 'uni…ns');
+	t.is(m('unicorns rainbow dragons', 20, {position: 'middle', preferTruncationOnSpace: true}), 'unicorns…dragons');
 });
