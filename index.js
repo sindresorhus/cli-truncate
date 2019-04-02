@@ -2,12 +2,13 @@
 const sliceAnsi = require('slice-ansi');
 const stringWidth = require('string-width');
 
-module.exports = (input, columns, opts) => {
-	opts = Object.assign({
-		position: 'end'
-	}, opts);
+module.exports = (input, columns, options) => {
+	options = {
+		position: 'end',
+		...options
+	};
 
-	const position = opts.position;
+	const {position} = options;
 	const ellipsis = '…';
 
 	if (typeof input !== 'string') {
@@ -34,10 +35,14 @@ module.exports = (input, columns, opts) => {
 
 	if (position === 'start') {
 		return ellipsis + sliceAnsi(input, length - columns + 1, length);
-	} else if (position === 'middle') {
+	}
+
+	if (position === 'middle') {
 		const half = Math.floor(columns / 2);
 		return sliceAnsi(input, 0, half) + ellipsis + sliceAnsi(input, length - (columns - half) + 1, length);
-	} else if (position === 'end') {
+	}
+
+	if (position === 'end') {
 		return sliceAnsi(input, 0, columns - 1) + ellipsis;
 	}
 
