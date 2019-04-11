@@ -30,16 +30,6 @@ cliTruncate('unicorn', 4, {position: 'middle'});
 cliTruncate('\u001B[31municorn\u001B[39m', 4);
 //=> '\u001B[31muni\u001B[39m…'
 
-// Set `space` to true to add space to ellipsis
-cliTruncate('unicorns', 5, {position: 'end', space: true});
-//=> 'uni …'
-
-cliTruncate('unicorns', 6, {position: 'start', space: true});
-//=> '… orns'
-
-cliTruncate('unicorns', 7, {position: 'middle', space: true});
-//=> 'uni … s'
-
 // Truncate Unicode surrogate pairs
 cliTruncate('uni\uD83C\uDE00corn', 5);
 //=> 'uni\uD83C\uDE00…'
@@ -87,7 +77,23 @@ Position to truncate the string.
 
 Type: `boolean`
 
-Add space to ellipsis. Depends on the `position` option.
+Add space between the text and the ellipsis. This depends on the `position` option to determine the space.
+
+Examples:
+```js
+// Set `space` to true to add space to ellipsis
+cliTruncate('unicorns', 5, {position: 'end', space: true});
+//=> 'uni …'
+
+cliTruncate('unicorns', 5, {position: 'end', space: false});
+//=> 'unic…'
+
+cliTruncate('unicorns', 6, {position: 'start', space: true});
+//=> '… orns'
+
+cliTruncate('unicorns', 7, {position: 'middle', space: true});
+//=> 'uni … s'
+```
 
 
 ## Related

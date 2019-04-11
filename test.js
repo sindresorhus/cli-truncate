@@ -19,7 +19,14 @@ test('main', t => {
 	t.is(cliTruncate('unicorn', 6, {position: 'start'}), '…icorn');
 	t.is(cliTruncate('unicorn', 5, {position: 'middle'}), 'un…rn');
 	t.is(cliTruncate('unicorns', 6, {position: 'middle'}), 'uni…ns');
+});
+
+test('space option', t => {
 	t.is(cliTruncate('unicorns', 5, {position: 'end', space: true}), 'uni …');
 	t.is(cliTruncate('unicorns', 6, {position: 'start', space: true}), '… orns');
 	t.is(cliTruncate('unicorns', 7, {position: 'middle', space: true}), 'uni … s');
+	t.is(cliTruncate('unicorns', 5, {position: 'end', space: false}), 'unic…');
+	t.is(cliTruncate('\u001B[31municorn\u001B[39m', 6, {space: true}), '\u001B[31munic\u001B[39m …');
+	t.is(cliTruncate('Plant a tree every day.', 14, {space: true}), 'Plant a tree …');
+	t.is(cliTruncate('안녕하세요', 4, {space: true}), '안 …', 'wide char');
 });
