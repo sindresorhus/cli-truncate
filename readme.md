@@ -47,9 +47,9 @@ cliTruncate(paragraph, process.stdout.columns));
 
 ## API
 
-### cliTruncate(input, columns, [options])
+### cliTruncate(text, columns, [options])
 
-#### input
+#### text
 
 Type: `string`
 

@@ -12,7 +12,7 @@ declare namespace cliTruncate {
 /**
 Truncate a string to a specific width in the terminal.
 
-@param input - Text to truncate.
+@param text - Text to truncate.
 @param columns - Columns to occupy in the terminal.
 
 @example
@@ -47,7 +47,7 @@ cliTruncate(paragraph, process.stdout.columns));
 ```
 */
 declare function cliTruncate(
-	input: string,
+	text: string,
 	columns: number,
 	options?: cliTruncate.Options
 ): string;

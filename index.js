@@ -2,7 +2,7 @@
 const sliceAnsi = require('slice-ansi');
 const stringWidth = require('string-width');
 
-module.exports = (input, columns, options) => {
+module.exports = (text, columns, options) => {
 	options = {
 		position: 'end',
 		...options
@@ -11,8 +11,8 @@ module.exports = (input, columns, options) => {
 	const {position} = options;
 	const ellipsis = '…';
 
-	if (typeof input !== 'string') {
-		throw new TypeError(`Expected \`input\` to be a string, got ${typeof input}`);
+	if (typeof text !== 'string') {
+		throw new TypeError(`Expected \`input\` to be a string, got ${typeof text}`);
 	}
 
 	if (typeof columns !== 'number') {
@@ -27,23 +27,23 @@ module.exports = (input, columns, options) => {
 		return ellipsis;
 	}
 
-	const length = stringWidth(input);
+	const length = stringWidth(text);
 
 	if (length <= columns) {
-		return input;
+		return text;
 	}
 
 	if (position === 'start') {
-		return ellipsis + sliceAnsi(input, length - columns + 1, length);
+		return ellipsis + sliceAnsi(text, length - columns + 1, length);
 	}
 
 	if (position === 'middle') {
 		const half = Math.floor(columns / 2);
-		return sliceAnsi(input, 0, half) + ellipsis + sliceAnsi(input, length - (columns - half) + 1, length);
+		return sliceAnsi(text, 0, half) + ellipsis + sliceAnsi(text, length - (columns - half) + 1, length);
 	}
 
 	if (position === 'end') {
-		return sliceAnsi(input, 0, columns - 1) + ellipsis;
+		return sliceAnsi(text, 0, columns - 1) + ellipsis;
 	}
 
 	throw new Error(`Expected \`options.position\` to be either \`start\`, \`middle\` or \`end\`, got ${position}`);
