@@ -85,10 +85,10 @@ Position to truncate the string.
 
 ##### space
 
-Type: `boolean`<br>
-Values: `true` `false`
+Type: `boolean`
 
 Add space to ellipsis. Depends on the `position` option.
+
 
 ## Related
 
