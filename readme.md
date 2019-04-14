@@ -33,6 +33,16 @@ cliTruncate('unicorns rainbow dragons', 20, {position: 'start', preferTruncation
 cliTruncate('unicorns rainbow dragons', 20, {position: 'middle', preferTruncationOnSpace: true})
 //=> 'unicorns…dragons'
 
+cliTruncate('unicorns rainbow dragons', 6, {position: 'end', preferTruncationOnSpace: true})
+//=> 'unico…'
+
+cliTruncate('unicorns rainbow dragons', 6, {position: 'end'})
+//=> 'unico…'
+// preferTruncationOnSpace would have no effect if space isn't found within next 3 indexes 
+
+cliTruncate('unicorns rainbow dragons', 6, {position: 'middle', preferTruncationOnSpace: true})
+//=> 'uni…ns'
+
 cliTruncate('\u001B[31municorn\u001B[39m', 4);
 //=> '\u001B[31muni\u001B[39m…'
 
@@ -53,9 +63,9 @@ cliTruncate(paragraph, process.stdout.columns));
 
 ## API
 
-### cliTruncate(input, columns, [options])
+### cliTruncate(text, columns, [options])
 
-#### input
+#### text
 
 Type: `string`
 
