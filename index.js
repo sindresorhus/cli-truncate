@@ -2,18 +2,18 @@
 const sliceAnsi = require('slice-ansi');
 const stringWidth = require('string-width');
 
-module.exports = (input, columns, opts) => {
-	opts = Object.assign({
+module.exports = (text, columns, options) => {
+	options = {
 		position: 'end',
-		preferTruncationOnSpace: false
-	}, opts);
+		preferTruncationOnSpace: false,
+		...options
+	};
 
-	const {position} = opts;
-	const {preferTruncationOnSpace} = opts;
+	const {position, preferTruncationOnSpace} = options;
 	const ellipsis = '…';
 
-	if (typeof input !== 'string') {
-		throw new TypeError(`Expected \`input\` to be a string, got ${typeof input}`);
+	if (typeof text !== 'string') {
+		throw new TypeError(`Expected \`input\` to be a string, got ${typeof text}`);
 	}
 
 	if (typeof columns !== 'number') {
@@ -28,60 +28,59 @@ module.exports = (input, columns, opts) => {
 		return ellipsis;
 	}
 
-	const length = stringWidth(input);
+	const length = stringWidth(text);
 
 	if (length <= columns) {
-		return input;
+		return text;
 	}
 
 	if (position === 'start') {
 		if (preferTruncationOnSpace) {
-			const nearestSpace = getIndexOfNearestSpace(input, length - columns + 1, true);
-			return ellipsis + sliceAnsi(input, nearestSpace, length).trim();
+			const nearestSpace = getIndexOfNearestSpace(text, length - columns + 1, true);
+			return ellipsis + sliceAnsi(text, nearestSpace, length).trim();
 		}
 
-		return ellipsis + sliceAnsi(input, length - columns + 1, length);
+		return ellipsis + sliceAnsi(text, length - columns + 1, length);
 	}
 
 	if (position === 'middle') {
 		const half = Math.floor(columns / 2);
 
 		if (preferTruncationOnSpace) {
-			const spaceNearFirstBreakPoint = getIndexOfNearestSpace(input, half);
-			const spaceNearSecondBreakPoint = getIndexOfNearestSpace(input, length - (columns - half) + 1, true);
-			return sliceAnsi(input, 0, spaceNearFirstBreakPoint) + ellipsis + sliceAnsi(input, spaceNearSecondBreakPoint, length).trim();
+			const spaceNearFirstBreakPoint = getIndexOfNearestSpace(text, half);
+			const spaceNearSecondBreakPoint = getIndexOfNearestSpace(text, length - (columns - half) + 1, true);
+			return sliceAnsi(text, 0, spaceNearFirstBreakPoint) + ellipsis + sliceAnsi(text, spaceNearSecondBreakPoint, length).trim();
 		}
 
-		return sliceAnsi(input, 0, half) + ellipsis + sliceAnsi(input, length - (columns - half) + 1, length);
+		return sliceAnsi(text, 0, half) + ellipsis + sliceAnsi(text, length - (columns - half) + 1, length);
 	}
 
 	if (position === 'end') {
 		if (preferTruncationOnSpace) {
-			const nearestSpace = getIndexOfNearestSpace(input, columns - 1);
-			return sliceAnsi(input, 0, nearestSpace) + ellipsis;
+			const nearestSpace = getIndexOfNearestSpace(text, columns - 1);
+			return sliceAnsi(text, 0, nearestSpace) + ellipsis;
 		}
 
-		return sliceAnsi(input, 0, columns - 1) + ellipsis;
+		return sliceAnsi(text, 0, columns - 1) + ellipsis;
 	}
 
 	throw new Error(`Expected \`options.position\` to be either \`start\`, \`middle\` or \`end\`, got ${position}`);
 };
 
-function getIndexOfNearestSpace(str, index, searchRight) {
-	if (str.charAt(index) === ' ') {
+function getIndexOfNearestSpace(string, index, shouldSearchRight) {
+	if (string.charAt(index) === ' ') {
 		return index;
 	}
 
 	for (let i = 1; i <= 3; i++) {
-		if (searchRight) {
-			if (str.charAt(index + i) === ' ') {
+		if (shouldSearchRight) {
+			if (string.charAt(index + i) === ' ') {
 				return index + i;
 			}
-		} else if (str.charAt(index - i) === ' ') {
+		} else if (string.charAt(index - i) === ' ') {
 			return index - i;
 		}
 	}
 
-	// Return the passed index if no space was encountered
 	return index;
 }
