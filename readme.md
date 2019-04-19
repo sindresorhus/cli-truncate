@@ -78,7 +78,7 @@ Position to truncate the string.
 Type: `boolean`<br>
 Default: `false`
 
-Add space between the text and the ellipsis.
+Add a space between the text and the ellipsis.
 
 ```js
 cliTruncate('unicorns', 5, {space: false});
