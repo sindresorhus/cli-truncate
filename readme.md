@@ -75,18 +75,17 @@ Position to truncate the string.
 
 ##### space
 
-Type: `boolean`
+Type: `boolean`<br>
+Default: `false`
 
-Add space between the text and the ellipsis. This depends on the `position` option to determine the space.
+Add space between the text and the ellipsis.
 
-Examples:
 ```js
-// Set `space` to true to add space to ellipsis
-cliTruncate('unicorns', 5, {position: 'end', space: true});
-//=> 'uni …'
-
-cliTruncate('unicorns', 5, {position: 'end', space: false});
+cliTruncate('unicorns', 5, {space: false});
 //=> 'unic…'
+
+cliTruncate('unicorns', 5, {space: true});
+//=> 'uni …'
 
 cliTruncate('unicorns', 6, {position: 'start', space: true});
 //=> '… orns'
