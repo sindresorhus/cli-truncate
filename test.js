@@ -29,4 +29,8 @@ test('space option', t => {
 	t.is(cliTruncate('\u001B[31municorn\u001B[39m', 6, {space: true}), '\u001B[31munic\u001B[39m …');
 	t.is(cliTruncate('Plant a tree every day.', 14, {space: true}), 'Plant a tree …');
 	t.is(cliTruncate('안녕하세요', 4, {space: true}), '안 …', 'wide char');
+	t.is(cliTruncate('\u001B[31municorn\u001B[39m', 6, {position: 'start', space: true}), '… \u001B[31mcorn\u001B[39m');
+	t.is(cliTruncate('\u001B[31municornsareawesome\u001B[39m', 10, {position: 'middle', space: true}), '\u001B[31munico\u001B[39m … \u001B[31mme\u001B[39m');
+	t.is(cliTruncate('Plant a tree every day.', 14, {position: 'middle', space: true}), 'Plant a … day.');
+	t.is(cliTruncate('안녕하세요', 4, {position: 'start', space: true}), '… 요', 'wide char');
 });
