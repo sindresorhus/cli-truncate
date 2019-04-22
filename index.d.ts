@@ -6,6 +6,28 @@ declare namespace cliTruncate {
 		@default 'end'
 		*/
 		readonly position?: 'start' | 'middle' | 'end';
+
+		/**
+		Add a space between the text and the ellipsis.
+		
+		@default false
+
+		@example
+		```
+		cliTruncate('unicorns', 5, {position: 'end', space: true});
+		//=> 'uni …'
+
+		cliTruncate('unicorns', 5, {position: 'end', space: false});
+		//=> 'unic…'
+
+		cliTruncate('unicorns', 6, {position: 'start', space: true});
+		//=> '… orns'
+
+		cliTruncate('unicorns', 7, {position: 'middle', space: true});
+		//=> 'uni … s'
+		```
+		*/
+		readonly space?: boolean;
 	}
 }
 
