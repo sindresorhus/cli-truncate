@@ -9,8 +9,9 @@ module.exports = (text, columns, options) => {
 		...options
 	};
 
-	const {position, preferTruncationOnSpace} = options;
-	const ellipsis = '…';
+	const {position, space, preferTruncationOnSpace} = options;
+	let ellipsis = '…';
+	let ellipsisWidth = 1;
 
 	if (typeof text !== 'string') {
 		throw new TypeError(`Expected \`input\` to be a string, got ${typeof text}`);
@@ -40,10 +41,20 @@ module.exports = (text, columns, options) => {
 			return ellipsis + sliceAnsi(text, nearestSpace, length).trim();
 		}
 
-		return ellipsis + sliceAnsi(text, length - columns + 1, length);
+		if (space === true) {
+			ellipsis += ' ';
+			ellipsisWidth = 2;
+		}
+
+		return ellipsis + sliceAnsi(text, length - columns + ellipsisWidth, length);
 	}
 
 	if (position === 'middle') {
+		if (space === true) {
+			ellipsis = ' ' + ellipsis + ' ';
+			ellipsisWidth = 3;
+		}
+
 		const half = Math.floor(columns / 2);
 
 		if (preferTruncationOnSpace) {
@@ -52,7 +63,11 @@ module.exports = (text, columns, options) => {
 			return sliceAnsi(text, 0, spaceNearFirstBreakPoint) + ellipsis + sliceAnsi(text, spaceNearSecondBreakPoint, length).trim();
 		}
 
-		return sliceAnsi(text, 0, half) + ellipsis + sliceAnsi(text, length - (columns - half) + 1, length);
+		return (
+			sliceAnsi(text, 0, half) +
+			ellipsis +
+			sliceAnsi(text, length - (columns - half) + ellipsisWidth, length)
+		);
 	}
 
 	if (position === 'end') {
@@ -61,7 +76,12 @@ module.exports = (text, columns, options) => {
 			return sliceAnsi(text, 0, nearestSpace) + ellipsis;
 		}
 
-		return sliceAnsi(text, 0, columns - 1) + ellipsis;
+		if (space === true) {
+			ellipsis = ' ' + ellipsis;
+			ellipsisWidth = 2;
+		}
+
+		return sliceAnsi(text, 0, columns - ellipsisWidth) + ellipsis;
 	}
 
 	throw new Error(`Expected \`options.position\` to be either \`start\`, \`middle\` or \`end\`, got ${position}`);

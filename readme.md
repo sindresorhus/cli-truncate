@@ -95,6 +95,23 @@ Type: `boolean`<br>
 Default: `false`
 
 Truncate the string from a whitespace if it is within 3 characters from the actual breaking point
+Add a space between the text and the ellipsis.
+
+##### space
+
+```js
+cliTruncate('unicorns', 5, {space: false});
+//=> 'unic…'
+
+cliTruncate('unicorns', 5, {space: true});
+//=> 'uni …'
+
+cliTruncate('unicorns', 6, {position: 'start', space: true});
+//=> '… orns'
+
+cliTruncate('unicorns', 7, {position: 'middle', space: true});
+//=> 'uni … s'
+```
 
 
 ## Related
