@@ -94,7 +94,7 @@ Position to truncate the string.
 Type: `boolean`<br>
 Default: `false`
 
-Truncate the string from a whitespace if it is within 3 characters from the actual breaking point
+Truncate the string from a whitespace if it is within 3 characters from the actual breaking point.
 Add a space between the text and the ellipsis.
 
 ##### space
