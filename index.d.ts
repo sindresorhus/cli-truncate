@@ -8,7 +8,7 @@ declare namespace cliTruncate {
 		readonly position?: 'start' | 'middle' | 'end';
 
 		/**
-		Truncate at different positions
+		Truncate at different positions.
 
 		@default false
 
