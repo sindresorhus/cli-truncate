@@ -32,7 +32,7 @@ declare namespace cliTruncate {
 		//=> '안…'
 		````
 		*/
-		readonly preferTruncationOnSpace?: true | false;
+		readonly preferTruncationOnSpace?: boolean;
 
 		/**
 		Add a space between the text and the ellipsis.
