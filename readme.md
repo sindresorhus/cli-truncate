@@ -27,21 +27,8 @@ cliTruncate('unicorn', 4, {position: 'start'});
 cliTruncate('unicorn', 4, {position: 'middle'});
 //=> 'un…n'
 
-cliTruncate('unicorns rainbow dragons', 20, {position: 'start', preferTruncationOnSpace: true})
-//=> '…rainbow dragons'
-
-cliTruncate('unicorns rainbow dragons', 20, {position: 'middle', preferTruncationOnSpace: true})
-//=> 'unicorns…dragons'
-
-cliTruncate('unicorns rainbow dragons', 6, {position: 'end', preferTruncationOnSpace: true})
-//=> 'unico…'
-
 cliTruncate('unicorns rainbow dragons', 6, {position: 'end'})
 //=> 'unico…'
-// preferTruncationOnSpace would have no effect if space isn't found within next 3 indexes 
-
-cliTruncate('unicorns rainbow dragons', 6, {position: 'middle', preferTruncationOnSpace: true})
-//=> 'uni…ns'
 
 cliTruncate('\u001B[31municorn\u001B[39m', 4);
 //=> '\u001B[31muni\u001B[39m…'
@@ -95,9 +82,29 @@ Type: `boolean`<br>
 Default: `false`
 
 Truncate the string from a whitespace if it is within 3 characters from the actual breaking point.
-Add a space between the text and the ellipsis.
+
+```js
+cliTruncate('unicorns rainbow dragons', 20, {position: 'start', preferTruncationOnSpace: true})
+//=> '…rainbow dragons'
+
+// without preferTruncationOnSpace
+cliTruncate('unicorns rainbow dragons', 20, {position: 'start'})
+//=> '…rns rainbow dragons'
+
+cliTruncate('unicorns rainbow dragons', 20, {position: 'middle', preferTruncationOnSpace: true})
+//=> 'unicorns…dragons'
+
+cliTruncate('unicorns rainbow dragons', 6, {position: 'end', preferTruncationOnSpace: true})
+//=> 'unico…'
+
+// preferTruncationOnSpace would have no effect if space isn't found within next 3 indexes  
+cliTruncate('unicorns rainbow dragons', 6, {position: 'middle', preferTruncationOnSpace: true})
+//=> 'uni…ns'
+```
 
 ##### space
+
+Add a space between the text and the ellipsis.
 
 ```js
 cliTruncate('unicorns', 5, {space: false});
