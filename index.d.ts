@@ -14,22 +14,14 @@ declare namespace cliTruncate {
 
 		@example
 		```
-		cliTruncate('unicorn', 4, {position: 'start'});
-		//=> '…orn'
+		cliTruncate('unicorns rainbow dragons', 20, {position: 'start', preferTruncationOnSpace: true});
+		//=> '…rainbow dragons'
 
-		cliTruncate('unicorn', 4, {position: 'middle'});
-		//=> 'un…n'
+		cliTruncate('unicorns rainbow dragons', 20, {position: 'middle', preferTruncationOnSpace: true});
+		//=> 'unicorns…dragons'
 
-		cliTruncate('\u001B[31municorn\u001B[39m', 4);
-		//=> '\u001B[31muni\u001B[39m…'
-
-		// Truncate Unicode surrogate pairs
-		cliTruncate('uni\uD83C\uDE00corn', 5);
-		//=> 'uni\uD83C\uDE00…'
-
-		// Truncate fullwidth characters
-		cliTruncate('안녕하세요', 3);
-		//=> '안…'
+		cliTruncate('unicorns rainbow dragons', 6, {position: 'end', preferTruncationOnSpace: true});
+		//=> 'unico…'
 		````
 		*/
 		readonly preferTruncationOnSpace?: boolean;
