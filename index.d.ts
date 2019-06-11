@@ -8,25 +8,6 @@ declare namespace cliTruncate {
 		readonly position?: 'start' | 'middle' | 'end';
 
 		/**
-		Truncate at different positions.
-
-		@default false
-
-		@example
-		```
-		cliTruncate('unicorns rainbow dragons', 20, {position: 'start', preferTruncationOnSpace: true});
-		//=> '…rainbow dragons'
-
-		cliTruncate('unicorns rainbow dragons', 20, {position: 'middle', preferTruncationOnSpace: true});
-		//=> 'unicorns…dragons'
-
-		cliTruncate('unicorns rainbow dragons', 6, {position: 'end', preferTruncationOnSpace: true});
-		//=> 'unico…'
-		````
-		*/
-		readonly preferTruncationOnSpace?: boolean;
-
-		/**
 		Add a space between the text and the ellipsis.
 		
 		@default false
@@ -47,6 +28,25 @@ declare namespace cliTruncate {
 		```
 		*/
 		readonly space?: boolean;
+
+		/**
+		Truncate at different positions.
+
+		@default false
+
+		@example
+		```
+		cliTruncate('unicorns rainbow dragons', 20, {position: 'start', preferTruncationOnSpace: true});
+		//=> '…rainbow dragons'
+
+		cliTruncate('unicorns rainbow dragons', 20, {position: 'middle', preferTruncationOnSpace: true});
+		//=> 'unicorns…dragons'
+
+		cliTruncate('unicorns rainbow dragons', 6, {position: 'end', preferTruncationOnSpace: true});
+		//=> 'unico…'
+		````
+		*/
+		readonly preferTruncationOnSpace?: boolean;
 	}
 }
 

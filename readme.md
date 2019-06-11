@@ -76,6 +76,24 @@ Values: `start` `middle` `end`
 
 Position to truncate the string.
 
+##### space
+
+Add a space between the text and the ellipsis.
+
+```js
+cliTruncate('unicorns', 5, {space: false});
+//=> 'unic…'
+
+cliTruncate('unicorns', 5, {space: true});
+//=> 'uni …'
+
+cliTruncate('unicorns', 6, {position: 'start', space: true});
+//=> '… orns'
+
+cliTruncate('unicorns', 7, {position: 'middle', space: true});
+//=> 'uni … s'
+```
+
 ##### preferTruncationOnSpace
 
 Type: `boolean`<br>
@@ -101,25 +119,6 @@ cliTruncate('unicorns rainbow dragons', 6, {position: 'end', preferTruncationOnS
 cliTruncate('unicorns rainbow dragons', 6, {position: 'middle', preferTruncationOnSpace: true})
 //=> 'uni…ns'
 ```
-
-##### space
-
-Add a space between the text and the ellipsis.
-
-```js
-cliTruncate('unicorns', 5, {space: false});
-//=> 'unic…'
-
-cliTruncate('unicorns', 5, {space: true});
-//=> 'uni …'
-
-cliTruncate('unicorns', 6, {position: 'start', space: true});
-//=> '… orns'
-
-cliTruncate('unicorns', 7, {position: 'middle', space: true});
-//=> 'uni … s'
-```
-
 
 ## Related
 
