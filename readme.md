@@ -78,6 +78,9 @@ Position to truncate the string.
 
 ##### space
 
+Type: `boolean`<br>
+Default: `false`
+
 Add a space between the text and the ellipsis.
 
 ```js
