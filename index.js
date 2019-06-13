@@ -5,10 +5,11 @@ const stringWidth = require('string-width');
 module.exports = (text, columns, options) => {
 	options = {
 		position: 'end',
+		preferTruncationOnSpace: false,
 		...options
 	};
 
-	const {position, space} = options;
+	const {position, space, preferTruncationOnSpace} = options;
 	let ellipsis = '…';
 	let ellipsisWidth = 1;
 
@@ -35,6 +36,11 @@ module.exports = (text, columns, options) => {
 	}
 
 	if (position === 'start') {
+		if (preferTruncationOnSpace) {
+			const nearestSpace = getIndexOfNearestSpace(text, length - columns + 1, true);
+			return ellipsis + sliceAnsi(text, nearestSpace, length).trim();
+		}
+
 		if (space === true) {
 			ellipsis += ' ';
 			ellipsisWidth = 2;
@@ -50,6 +56,13 @@ module.exports = (text, columns, options) => {
 		}
 
 		const half = Math.floor(columns / 2);
+
+		if (preferTruncationOnSpace) {
+			const spaceNearFirstBreakPoint = getIndexOfNearestSpace(text, half);
+			const spaceNearSecondBreakPoint = getIndexOfNearestSpace(text, length - (columns - half) + 1, true);
+			return sliceAnsi(text, 0, spaceNearFirstBreakPoint) + ellipsis + sliceAnsi(text, spaceNearSecondBreakPoint, length).trim();
+		}
+
 		return (
 			sliceAnsi(text, 0, half) +
 			ellipsis +
@@ -58,6 +71,11 @@ module.exports = (text, columns, options) => {
 	}
 
 	if (position === 'end') {
+		if (preferTruncationOnSpace) {
+			const nearestSpace = getIndexOfNearestSpace(text, columns - 1);
+			return sliceAnsi(text, 0, nearestSpace) + ellipsis;
+		}
+
 		if (space === true) {
 			ellipsis = ' ' + ellipsis;
 			ellipsisWidth = 2;
@@ -68,3 +86,21 @@ module.exports = (text, columns, options) => {
 
 	throw new Error(`Expected \`options.position\` to be either \`start\`, \`middle\` or \`end\`, got ${position}`);
 };
+
+function getIndexOfNearestSpace(string, index, shouldSearchRight) {
+	if (string.charAt(index) === ' ') {
+		return index;
+	}
+
+	for (let i = 1; i <= 3; i++) {
+		if (shouldSearchRight) {
+			if (string.charAt(index + i) === ' ') {
+				return index + i;
+			}
+		} else if (string.charAt(index - i) === ' ') {
+			return index - i;
+		}
+	}
+
+	return index;
+}

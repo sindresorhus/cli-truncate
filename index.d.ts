@@ -28,6 +28,25 @@ declare namespace cliTruncate {
 		```
 		*/
 		readonly space?: boolean;
+
+		/**
+		Truncate the string from a whitespace if it is within 3 characters from the actual breaking point.
+
+		@default false
+
+		@example
+		```
+		cliTruncate('unicorns rainbow dragons', 20, {position: 'start', preferTruncationOnSpace: true});
+		//=> '…rainbow dragons'
+
+		cliTruncate('unicorns rainbow dragons', 20, {position: 'middle', preferTruncationOnSpace: true});
+		//=> 'unicorns…dragons'
+
+		cliTruncate('unicorns rainbow dragons', 6, {position: 'end', preferTruncationOnSpace: true});
+		//=> 'unico…'
+		````
+		*/
+		readonly preferTruncationOnSpace?: boolean;
 	}
 }
 

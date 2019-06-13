@@ -27,6 +27,9 @@ cliTruncate('unicorn', 4, {position: 'start'});
 cliTruncate('unicorn', 4, {position: 'middle'});
 //=> 'un…n'
 
+cliTruncate('unicorns rainbow dragons', 6, {position: 'end'})
+//=> 'unico…'
+
 cliTruncate('\u001B[31municorn\u001B[39m', 4);
 //=> '\u001B[31muni\u001B[39m…'
 
@@ -94,6 +97,31 @@ cliTruncate('unicorns', 7, {position: 'middle', space: true});
 //=> 'uni … s'
 ```
 
+##### preferTruncationOnSpace
+
+Type: `boolean`<br>
+Default: `false`
+
+Truncate the string from a whitespace if it is within 3 characters from the actual breaking point.
+
+```js
+cliTruncate('unicorns rainbow dragons', 20, {position: 'start', preferTruncationOnSpace: true})
+//=> '…rainbow dragons'
+
+// without preferTruncationOnSpace
+cliTruncate('unicorns rainbow dragons', 20, {position: 'start'})
+//=> '…rns rainbow dragons'
+
+cliTruncate('unicorns rainbow dragons', 20, {position: 'middle', preferTruncationOnSpace: true})
+//=> 'unicorns…dragons'
+
+cliTruncate('unicorns rainbow dragons', 6, {position: 'end', preferTruncationOnSpace: true})
+//=> 'unico…'
+
+// preferTruncationOnSpace would have no effect if space isn't found within next 3 indexes  
+cliTruncate('unicorns rainbow dragons', 6, {position: 'middle', preferTruncationOnSpace: true})
+//=> 'uni…ns'
+```
 
 ## Related
 
