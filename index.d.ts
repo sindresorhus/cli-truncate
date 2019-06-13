@@ -30,7 +30,7 @@ declare namespace cliTruncate {
 		readonly space?: boolean;
 
 		/**
-		Truncate at different positions.
+		Truncate the string from a whitespace if it is within 3 characters from the actual breaking point.
 
 		@default false
 
