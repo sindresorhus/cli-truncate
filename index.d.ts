@@ -9,7 +9,7 @@ declare namespace cliTruncate {
 
 		/**
 		Add a space between the text and the ellipsis.
-		
+
 		@default false
 
 		@example

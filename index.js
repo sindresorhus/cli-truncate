@@ -2,6 +2,24 @@
 const sliceAnsi = require('slice-ansi');
 const stringWidth = require('string-width');
 
+function getIndexOfNearestSpace(string, index, shouldSearchRight) {
+	if (string.charAt(index) === ' ') {
+		return index;
+	}
+
+	for (let i = 1; i <= 3; i++) {
+		if (shouldSearchRight) {
+			if (string.charAt(index + i) === ' ') {
+				return index + i;
+			}
+		} else if (string.charAt(index - i) === ' ') {
+			return index - i;
+		}
+	}
+
+	return index;
+}
+
 module.exports = (text, columns, options) => {
 	options = {
 		position: 'end',
@@ -86,21 +104,3 @@ module.exports = (text, columns, options) => {
 
 	throw new Error(`Expected \`options.position\` to be either \`start\`, \`middle\` or \`end\`, got ${position}`);
 };
-
-function getIndexOfNearestSpace(string, index, shouldSearchRight) {
-	if (string.charAt(index) === ' ') {
-		return index;
-	}
-
-	for (let i = 1; i <= 3; i++) {
-		if (shouldSearchRight) {
-			if (string.charAt(index + i) === ' ') {
-				return index + i;
-			}
-		} else if (string.charAt(index - i) === ' ') {
-			return index - i;
-		}
-	}
-
-	return index;
-}

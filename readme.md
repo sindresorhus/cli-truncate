@@ -50,7 +50,7 @@ cliTruncate(paragraph, process.stdout.columns));
 
 ## API
 
-### cliTruncate(text, columns, [options])
+### cliTruncate(text, columns, options?)
 
 #### text
 
@@ -66,13 +66,13 @@ Columns to occupy in the terminal.
 
 #### options
 
-Type: `Object`
+Type: `object`
 
 ##### position
 
 Type: `string`<br>
-Default: `end`<br>
-Values: `start` `middle` `end`
+Default: `'end'`<br>
+Values: `'start'` `'middle'` `'end'`
 
 Position to truncate the string.
 
@@ -118,17 +118,13 @@ cliTruncate('unicorns rainbow dragons', 20, {position: 'middle', preferTruncatio
 cliTruncate('unicorns rainbow dragons', 6, {position: 'end', preferTruncationOnSpace: true})
 //=> 'unico…'
 
-// preferTruncationOnSpace would have no effect if space isn't found within next 3 indexes  
+// preferTruncationOnSpace would have no effect if space isn't found within next 3 indexes
 cliTruncate('unicorns rainbow dragons', 6, {position: 'middle', preferTruncationOnSpace: true})
 //=> 'uni…ns'
 ```
+
 
 ## Related
 
 - [wrap-ansi](https://github.com/chalk/wrap-ansi) - Wordwrap a string with ANSI escape codes
 - [slice-ansi](https://github.com/chalk/slice-ansi) - Slice a string with ANSI escape codes
-
-
-## License
-
-MIT © [Sindre Sorhus](https://sindresorhus.com)
