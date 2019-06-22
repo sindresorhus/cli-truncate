@@ -21,11 +21,10 @@ function getIndexOfNearestSpace(string, index, shouldSearchRight) {
 }
 
 module.exports = (text, columns, options) => {
-	options = {
+	options = Object.assign({
 		position: 'end',
 		preferTruncationOnSpace: false,
-		...options
-	};
+	}, options);
 
 	const {position, space, preferTruncationOnSpace} = options;
 	let ellipsis = '…';
