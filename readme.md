@@ -4,13 +4,11 @@
 
 Gracefully handles [ANSI escapes](https://en.wikipedia.org/wiki/ANSI_escape_code#Colors_and_Styles). Like a string styled with [`chalk`](https://github.com/chalk/chalk). It also supports Unicode surrogate pairs and fullwidth characters.
 
-
 ## Install
 
 ```
 $ npm install cli-truncate
 ```
-
 
 ## Usage
 
@@ -47,7 +45,6 @@ cliTruncate(paragraph, process.stdout.columns));
 //=> 'Lorem ipsum dolor sit amet, consectetuer adipiscing…'
 ```
 
-
 ## API
 
 ### cliTruncate(text, columns, options?)
@@ -70,15 +67,15 @@ Type: `object`
 
 ##### position
 
-Type: `string`<br>
-Default: `'end'`<br>
+Type: `string`\
+Default: `'end'`\
 Values: `'start'` `'middle'` `'end'`
 
 Position to truncate the string.
 
 ##### space
 
-Type: `boolean`<br>
+Type: `boolean`\
 Default: `false`
 
 Add a space between the text and the ellipsis.
@@ -99,7 +96,7 @@ cliTruncate('unicorns', 7, {position: 'middle', space: true});
 
 ##### preferTruncationOnSpace
 
-Type: `boolean`<br>
+Type: `boolean`\
 Default: `false`
 
 Truncate the string from a whitespace if it is within 3 characters from the actual breaking point.
@@ -122,7 +119,6 @@ cliTruncate('unicorns rainbow dragons', 6, {position: 'end', preferTruncationOnS
 cliTruncate('unicorns rainbow dragons', 6, {position: 'middle', preferTruncationOnSpace: true})
 //=> 'uni…ns'
 ```
-
 
 ## Related
 
