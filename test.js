@@ -1,5 +1,5 @@
 import test from 'ava';
-import cliTruncate from '.';
+import cliTruncate from './index.js';
 
 test('main', t => {
 	t.is(cliTruncate('unicorn', 4), 'uni…');

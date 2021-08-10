@@ -1,5 +1,5 @@
 import {expectType} from 'tsd';
-import cliTruncate = require('.');
+import cliTruncate from './index.js';
 
 expectType<string>(cliTruncate('unicorn', 4));
 expectType<string>(cliTruncate('unicorn', 4, {position: 'start'}));

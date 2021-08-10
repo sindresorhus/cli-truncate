@@ -13,7 +13,7 @@ $ npm install cli-truncate
 ## Usage
 
 ```js
-const cliTruncate = require('cli-truncate');
+import cliTruncate from 'cli-truncate';
 
 cliTruncate('unicorn', 4);
 //=> 'uni…'
@@ -59,7 +59,7 @@ Text to truncate.
 
 Type: `number`
 
-Columns to occupy in the terminal.
+The number of columns to occupy in the terminal.
 
 #### options
 
@@ -71,7 +71,7 @@ Type: `string`\
 Default: `'end'`\
 Values: `'start'` `'middle'` `'end'`
 
-Position to truncate the string.
+The position to truncate the string.
 
 ##### space
 
@@ -81,6 +81,8 @@ Default: `false`
 Add a space between the text and the ellipsis.
 
 ```js
+import cliTruncate from 'cli-truncate';
+
 cliTruncate('unicorns', 5, {space: false});
 //=> 'unic…'
 
@@ -102,6 +104,8 @@ Default: `false`
 Truncate the string from a whitespace if it is within 3 characters from the actual breaking point.
 
 ```js
+import cliTruncate from 'cli-truncate';
+
 cliTruncate('unicorns rainbow dragons', 20, {position: 'start', preferTruncationOnSpace: true})
 //=> '…rainbow dragons'
 
@@ -124,7 +128,6 @@ cliTruncate('unicorns rainbow dragons', 6, {position: 'middle', preferTruncation
 
 - [wrap-ansi](https://github.com/chalk/wrap-ansi) - Wordwrap a string with ANSI escape codes
 - [slice-ansi](https://github.com/chalk/slice-ansi) - Slice a string with ANSI escape codes
-
 
 ---
 

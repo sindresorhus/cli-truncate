@@ -1,30 +1,29 @@
-'use strict';
-const sliceAnsi = require('slice-ansi');
-const stringWidth = require('string-width');
+import sliceAnsi from 'slice-ansi';
+import stringWidth from 'string-width';
 
-function getIndexOfNearestSpace(string, index, shouldSearchRight) {
-	if (string.charAt(index) === ' ') {
-		return index;
+function getIndexOfNearestSpace(string, wantedIndex, shouldSearchRight) {
+	if (string.charAt(wantedIndex) === ' ') {
+		return wantedIndex;
 	}
 
-	for (let i = 1; i <= 3; i++) {
+	for (let index = 1; index <= 3; index++) {
 		if (shouldSearchRight) {
-			if (string.charAt(index + i) === ' ') {
-				return index + i;
+			if (string.charAt(wantedIndex + index) === ' ') {
+				return wantedIndex + index;
 			}
-		} else if (string.charAt(index - i) === ' ') {
-			return index - i;
+		} else if (string.charAt(wantedIndex - index) === ' ') {
+			return wantedIndex - index;
 		}
 	}
 
-	return index;
+	return wantedIndex;
 }
 
-module.exports = (text, columns, options) => {
+export default function cliTruncate(text, columns, options) {
 	options = {
 		position: 'end',
 		preferTruncationOnSpace: false,
-		...options
+		...options,
 	};
 
 	const {position, space, preferTruncationOnSpace} = options;
@@ -69,7 +68,7 @@ module.exports = (text, columns, options) => {
 
 	if (position === 'middle') {
 		if (space === true) {
-			ellipsis = ' ' + ellipsis + ' ';
+			ellipsis = ` ${ellipsis} `;
 			ellipsisWidth = 3;
 		}
 
@@ -82,9 +81,9 @@ module.exports = (text, columns, options) => {
 		}
 
 		return (
-			sliceAnsi(text, 0, half) +
-			ellipsis +
-			sliceAnsi(text, length - (columns - half) + ellipsisWidth, length)
+			sliceAnsi(text, 0, half)
+				+ ellipsis
+				+ sliceAnsi(text, length - (columns - half) + ellipsisWidth, length)
 		);
 	}
 
@@ -95,7 +94,7 @@ module.exports = (text, columns, options) => {
 		}
 
 		if (space === true) {
-			ellipsis = ' ' + ellipsis;
+			ellipsis = ` ${ellipsis}`;
 			ellipsisWidth = 2;
 		}
 
@@ -103,4 +102,4 @@ module.exports = (text, columns, options) => {
 	}
 
 	throw new Error(`Expected \`options.position\` to be either \`start\`, \`middle\` or \`end\`, got ${position}`);
-};
+}
