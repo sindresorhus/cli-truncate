@@ -45,7 +45,7 @@ cliTruncate(paragraph, process.stdout.columns));
 //=> 'Lorem ipsum dolor sit amet, consectetuer adipiscing…'
 
 // Replace the ellipsis character
-cliTruncate('unicorns', 5, {position: 'end', ellipsis: '.'});
+cliTruncate('unicorns', 5, {position: 'end', truncationCharacter: '.'});
 //=> 'unic.'
 ```
 
@@ -128,12 +128,12 @@ cliTruncate('unicorns rainbow dragons', 6, {position: 'middle', preferTruncation
 //=> 'uni…ns'
 ```
 
-##### ellipsis
+##### truncationCharacter
 
 Type: `string`\
 Default: `…`
 
-Use a different character instead of an ellipsis at the breaking point. You can also remove the ellipsis entirely.
+Use a different character instead of an truncationCharacter at the breaking point. You can also remove the truncationCharacter entirely.
 
 ```js
 import cliTruncate from 'cli-truncate';
@@ -142,12 +142,12 @@ import cliTruncate from 'cli-truncate';
 cliTruncate('unicorns', 5, {position: 'end'});
 //=> 'unic…'
 
-// With ellipsis as '.'
-cliTruncate('unicorns', 5, {position: 'end', ellipsis: '.'});
+// With truncationCharacter as '.'
+cliTruncate('unicorns', 5, {position: 'end', truncationCharacter: '.'});
 //=> 'unic.'
 
-// With ellipsis as ''
-cliTruncate('unicorns', 5, {position: 'end', ellipsis: '.'});
+// With truncationCharacter as ''
+cliTruncate('unicorns', 5, {position: 'end', truncationCharacter: '.'});
 //=> 'unico'
 ```
 
