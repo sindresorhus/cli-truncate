@@ -23,12 +23,11 @@ export default function cliTruncate(text, columns, options) {
 	options = {
 		position: 'end',
 		preferTruncationOnSpace: false,
+		ellipsis: '…',
 		...options,
 	};
 
 	const {position, space, preferTruncationOnSpace} = options;
-	let ellipsis = '…';
-	let ellipsisWidth = 1;
 
 	if (typeof text !== 'string') {
 		throw new TypeError(`Expected \`input\` to be a string, got ${typeof text}`);
@@ -43,7 +42,7 @@ export default function cliTruncate(text, columns, options) {
 	}
 
 	if (columns === 1) {
-		return ellipsis;
+		return options.ellipsis;
 	}
 
 	const length = stringWidth(text);
@@ -55,21 +54,19 @@ export default function cliTruncate(text, columns, options) {
 	if (position === 'start') {
 		if (preferTruncationOnSpace) {
 			const nearestSpace = getIndexOfNearestSpace(text, length - columns + 1, true);
-			return ellipsis + sliceAnsi(text, nearestSpace, length).trim();
+			return options.ellipsis + sliceAnsi(text, nearestSpace, length).trim();
 		}
 
 		if (space === true) {
-			ellipsis += ' ';
-			ellipsisWidth = 2;
+			options.ellipsis += ' ';
 		}
 
-		return ellipsis + sliceAnsi(text, length - columns + ellipsisWidth, length);
+		return options.ellipsis + sliceAnsi(text, length - columns + stringWidth(options.ellipsis), length);
 	}
 
 	if (position === 'middle') {
 		if (space === true) {
-			ellipsis = ` ${ellipsis} `;
-			ellipsisWidth = 3;
+			options.ellipsis = ` ${options.ellipsis} `;
 		}
 
 		const half = Math.floor(columns / 2);
@@ -77,28 +74,27 @@ export default function cliTruncate(text, columns, options) {
 		if (preferTruncationOnSpace) {
 			const spaceNearFirstBreakPoint = getIndexOfNearestSpace(text, half);
 			const spaceNearSecondBreakPoint = getIndexOfNearestSpace(text, length - (columns - half) + 1, true);
-			return sliceAnsi(text, 0, spaceNearFirstBreakPoint) + ellipsis + sliceAnsi(text, spaceNearSecondBreakPoint, length).trim();
+			return sliceAnsi(text, 0, spaceNearFirstBreakPoint) + options.ellipsis + sliceAnsi(text, spaceNearSecondBreakPoint, length).trim();
 		}
 
 		return (
 			sliceAnsi(text, 0, half)
-				+ ellipsis
-				+ sliceAnsi(text, length - (columns - half) + ellipsisWidth, length)
+				+ options.ellipsis
+				+ sliceAnsi(text, length - (columns - half) + stringWidth(options.ellipsis), length)
 		);
 	}
 
 	if (position === 'end') {
 		if (preferTruncationOnSpace) {
 			const nearestSpace = getIndexOfNearestSpace(text, columns - 1);
-			return sliceAnsi(text, 0, nearestSpace) + ellipsis;
+			return sliceAnsi(text, 0, nearestSpace) + options.ellipsis;
 		}
 
 		if (space === true) {
-			ellipsis = ` ${ellipsis}`;
-			ellipsisWidth = 2;
+			options.ellipsis = ` ${options.ellipsis}`;
 		}
 
-		return sliceAnsi(text, 0, columns - ellipsisWidth) + ellipsis;
+		return sliceAnsi(text, 0, columns - stringWidth(options.ellipsis)) + options.ellipsis;
 	}
 
 	throw new Error(`Expected \`options.position\` to be either \`start\`, \`middle\` or \`end\`, got ${position}`);
