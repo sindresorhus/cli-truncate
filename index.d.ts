@@ -50,6 +50,26 @@ export interface Options {
 	````
 	*/
 	readonly preferTruncationOnSpace?: boolean;
+
+	/**
+	Use a different character instead of `…`
+	
+	@default '…'
+	
+	@example
+	```
+	import cliTruncate from 'cli-truncate';
+	
+	cliTruncate('unicorns', 5, {potision: 'end'});
+	//=> 'unic…'
+	
+	cliTruncate('unicorns', 5, {position: 'end', ellipsis: '.'});
+	//=> 'unic.'
+	
+	cliTruncate('unicorns', 5, {position: 'end', ellipsis: ''});
+	//=> 'unico'
+	*/
+	ellipsis?: string;
 }
 
 /**
