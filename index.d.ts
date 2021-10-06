@@ -63,10 +63,10 @@ export interface Options {
 	cliTruncate('unicorns', 5, {potision: 'end'});
 	//=> 'unic…'
 	
-	cliTruncate('unicorns', 5, {position: 'end', ellipsis: '.'});
+	cliTruncate('unicorns', 5, {position: 'end', truncationCharacter: '.'});
 	//=> 'unic.'
 	
-	cliTruncate('unicorns', 5, {position: 'end', ellipsis: ''});
+	cliTruncate('unicorns', 5, {position: 'end', truncationCharacter: ''});
 	//=> 'unico'
 	*/
 	ellipsis?: string;
