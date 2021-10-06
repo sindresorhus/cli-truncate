@@ -131,7 +131,7 @@ cliTruncate('unicorns rainbow dragons', 6, {position: 'middle', preferTruncation
 ##### ellipsis
 
 Type: `string`\
-Default: `false`
+Default: `…`
 
 Use a different character instead of an ellipsis at the breaking point. You can also remove the ellipsis entirely.
 
