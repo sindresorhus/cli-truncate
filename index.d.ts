@@ -52,7 +52,7 @@ export interface Options {
 	readonly preferTruncationOnSpace?: boolean;
 
 	/**
-	The character to use at the breaking point instead of an ellipsis.
+	The character to use at the breaking point.
 
 	@default '…'
 
