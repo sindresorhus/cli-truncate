@@ -43,7 +43,7 @@ export default function cliTruncate(text, columns, options) {
 	}
 
 	if (columns === 1) {
-		return options.truncationCharacter;
+		return truncationCharacter;
 	}
 
 	const length = stringWidth(text);
@@ -55,19 +55,19 @@ export default function cliTruncate(text, columns, options) {
 	if (position === 'start') {
 		if (preferTruncationOnSpace) {
 			const nearestSpace = getIndexOfNearestSpace(text, length - columns + 1, true);
-			return options.truncationCharacter + sliceAnsi(text, nearestSpace, length).trim();
+			return truncationCharacter + sliceAnsi(text, nearestSpace, length).trim();
 		}
 
 		if (space === true) {
-			options.truncationCharacter += ' ';
+			truncationCharacter += ' ';
 		}
 
-		return options.truncationCharacter + sliceAnsi(text, length - columns + stringWidth(options.truncationCharacter), length);
+		return truncationCharacter + sliceAnsi(text, length - columns + stringWidth(truncationCharacter), length);
 	}
 
 	if (position === 'middle') {
 		if (space === true) {
-			options.truncationCharacter = ` ${options.truncationCharacter} `;
+			truncationCharacter = ` ${truncationCharacter} `;
 		}
 
 		const half = Math.floor(columns / 2);
@@ -75,27 +75,27 @@ export default function cliTruncate(text, columns, options) {
 		if (preferTruncationOnSpace) {
 			const spaceNearFirstBreakPoint = getIndexOfNearestSpace(text, half);
 			const spaceNearSecondBreakPoint = getIndexOfNearestSpace(text, length - (columns - half) + 1, true);
-			return sliceAnsi(text, 0, spaceNearFirstBreakPoint) + options.truncationCharacter + sliceAnsi(text, spaceNearSecondBreakPoint, length).trim();
+			return sliceAnsi(text, 0, spaceNearFirstBreakPoint) + truncationCharacter + sliceAnsi(text, spaceNearSecondBreakPoint, length).trim();
 		}
 
 		return (
 			sliceAnsi(text, 0, half)
-				+ options.truncationCharacter
-				+ sliceAnsi(text, length - (columns - half) + stringWidth(options.truncationCharacter), length)
+				+ truncationCharacter
+				+ sliceAnsi(text, length - (columns - half) + stringWidth(truncationCharacter), length)
 		);
 	}
 
 	if (position === 'end') {
 		if (preferTruncationOnSpace) {
 			const nearestSpace = getIndexOfNearestSpace(text, columns - 1);
-			return sliceAnsi(text, 0, nearestSpace) + options.truncationCharacter;
+			return sliceAnsi(text, 0, nearestSpace) + truncationCharacter;
 		}
 
 		if (space === true) {
-			options.truncationCharacter = ` ${options.truncationCharacter}`;
+			truncationCharacter = ` ${truncationCharacter}`;
 		}
 
-		return sliceAnsi(text, 0, columns - stringWidth(options.truncationCharacter)) + options.truncationCharacter;
+		return sliceAnsi(text, 0, columns - stringWidth(truncationCharacter)) + truncationCharacter;
 	}
 
 	throw new Error(`Expected \`options.position\` to be either \`start\`, \`middle\` or \`end\`, got ${position}`);
