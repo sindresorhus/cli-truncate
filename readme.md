@@ -124,6 +124,26 @@ cliTruncate('unicorns rainbow dragons', 6, {position: 'middle', preferTruncation
 //=> 'uni…ns'
 ```
 
+##### truncationCharacter
+
+Type: `string`\
+Default: `…`
+
+The character to use at the breaking point.
+
+```js
+import cliTruncate from 'cli-truncate';
+
+cliTruncate('unicorns', 5, {position: 'end'});
+//=> 'unic…'
+
+cliTruncate('unicorns', 5, {position: 'end', truncationCharacter: '.'});
+//=> 'unic.'
+
+cliTruncate('unicorns', 5, {position: 'end', truncationCharacter: ''});
+//=> 'unico'
+```
+
 ## Related
 
 - [wrap-ansi](https://github.com/chalk/wrap-ansi) - Wordwrap a string with ANSI escape codes

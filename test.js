@@ -43,3 +43,14 @@ test('preferTruncationOnSpace option', t => {
 	t.is(cliTruncate('unicorns rainbow dragons', 6, {position: 'middle', preferTruncationOnSpace: true}), 'uni…ns');
 	t.is(cliTruncate('unicorns partying with dragons', 20, {position: 'middle', preferTruncationOnSpace: true}), 'unicorns…dragons');
 });
+
+test('truncationCharacter option', t => {
+	t.is(cliTruncate('unicorns', 5, {position: 'end', truncationCharacter: '.'}), 'unic.');
+	t.is(cliTruncate('unicorns', 5, {position: 'start', truncationCharacter: '.'}), '.orns');
+	t.is(cliTruncate('unicorns', 5, {position: 'middle', truncationCharacter: '.'}), 'un.ns');
+	t.is(cliTruncate('unicorns', 5, {position: 'end', truncationCharacter: '.', space: true}), 'uni .');
+	t.is(cliTruncate('unicorns', 5, {position: 'end', truncationCharacter: ' .'}), 'uni .');
+	t.is(cliTruncate('unicorns partying with dragons', 20, {position: 'middle', truncationCharacter: '.', preferTruncationOnSpace: true}), 'unicorns.dragons');
+	t.is(cliTruncate('안녕하세요', 4, {position: 'start', space: true, truncationCharacter: '.'}), '. 요', 'wide char');
+	t.is(cliTruncate('\u001B[31municornsareawesome\u001B[39m', 10, {position: 'middle', space: true, truncationCharacter: '.'}), '\u001B[31munico\u001B[39m . \u001B[31mme\u001B[39m');
+});

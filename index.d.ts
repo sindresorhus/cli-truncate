@@ -50,6 +50,26 @@ export interface Options {
 	````
 	*/
 	readonly preferTruncationOnSpace?: boolean;
+
+	/**
+	The character to use at the breaking point.
+
+	@default '…'
+
+	@example
+	```
+	import cliTruncate from 'cli-truncate';
+
+	cliTruncate('unicorns', 5, {position: 'end'});
+	//=> 'unic…'
+
+	cliTruncate('unicorns', 5, {position: 'end', truncationCharacter: '.'});
+	//=> 'unic.'
+
+	cliTruncate('unicorns', 5, {position: 'end', truncationCharacter: ''});
+	//=> 'unico'
+	*/
+	readonly truncationCharacter?: string;
 }
 
 /**
