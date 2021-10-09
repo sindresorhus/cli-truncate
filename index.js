@@ -28,6 +28,7 @@ export default function cliTruncate(text, columns, options) {
 	};
 
 	const {position, space, preferTruncationOnSpace} = options;
+	let {truncationCharacter} = options;
 
 	if (typeof text !== 'string') {
 		throw new TypeError(`Expected \`input\` to be a string, got ${typeof text}`);
