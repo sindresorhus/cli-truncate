@@ -43,10 +43,6 @@ cliTruncate('안녕하세요', 3);
 const paragraph = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.';
 cliTruncate(paragraph, process.stdout.columns));
 //=> 'Lorem ipsum dolor sit amet, consectetuer adipiscing…'
-
-// Replace the ellipsis character
-cliTruncate('unicorns', 5, {position: 'end', truncationCharacter: '.'});
-//=> 'unic.'
 ```
 
 ## API
@@ -133,7 +129,7 @@ cliTruncate('unicorns rainbow dragons', 6, {position: 'middle', preferTruncation
 Type: `string`\
 Default: `…`
 
-The character to use at the breaking point instead of an ellipsis.
+The character to use at the breaking point.
 
 ```js
 import cliTruncate from 'cli-truncate';
