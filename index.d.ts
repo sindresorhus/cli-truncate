@@ -69,7 +69,7 @@ export interface Options {
 	cliTruncate('unicorns', 5, {position: 'end', truncationCharacter: ''});
 	//=> 'unico'
 	*/
-	truncationCharacter?: string;
+	readonly truncationCharacter?: string;
 }
 
 /**
