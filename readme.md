@@ -133,21 +133,18 @@ cliTruncate('unicorns rainbow dragons', 6, {position: 'middle', preferTruncation
 Type: `string`\
 Default: `…`
 
-Use a different character instead of an truncationCharacter at the breaking point. You can also remove the truncationCharacter entirely.
+The character to use at the breaking point instead of an ellipsis.
 
 ```js
 import cliTruncate from 'cli-truncate';
 
-// With default ellipsis
 cliTruncate('unicorns', 5, {position: 'end'});
 //=> 'unic…'
 
-// With truncationCharacter as '.'
 cliTruncate('unicorns', 5, {position: 'end', truncationCharacter: '.'});
 //=> 'unic.'
 
-// With truncationCharacter as ''
-cliTruncate('unicorns', 5, {position: 'end', truncationCharacter: '.'});
+cliTruncate('unicorns', 5, {position: 'end', truncationCharacter: ''});
 //=> 'unico'
 ```
 
