@@ -1,17 +1,21 @@
 import sliceAnsi from 'slice-ansi';
 import stringWidth from 'string-width';
 
+function chatAtPositionIsEmpty(string, wantedIndex) {
+	return string.charAt(wantedIndex) === ' ';
+}
+
 function getIndexOfNearestSpace(string, wantedIndex, shouldSearchRight) {
-	if (string.charAt(wantedIndex) === ' ') {
+	if (chatAtPositionIsEmpty(string, wantedIndex)) {
 		return wantedIndex;
 	}
 
 	for (let index = 1; index <= 3; index++) {
 		if (shouldSearchRight) {
-			if (string.charAt(wantedIndex + index) === ' ') {
+			if (chatAtPositionIsEmpty(string, wantedIndex + index)) {
 				return wantedIndex + index;
 			}
-		} else if (string.charAt(wantedIndex - index) === ' ') {
+		} else if (chatAtPositionIsEmpty(string, wantedIndex - index)) {
 			return wantedIndex - index;
 		}
 	}
