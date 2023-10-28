@@ -19,6 +19,7 @@ test('main', t => {
 	t.is(cliTruncate('unicorn', 6, {position: 'start'}), '…icorn');
 	t.is(cliTruncate('unicorn', 5, {position: 'middle'}), 'un…rn');
 	t.is(cliTruncate('unicorns', 6, {position: 'middle'}), 'uni…ns');
+	t.is(cliTruncate('unicorns', 6, {position: 'middle'}), 'uni…ns');
 });
 
 test('space option', t => {
