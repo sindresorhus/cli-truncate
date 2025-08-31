@@ -77,8 +77,8 @@ export default function cliTruncate(text, columns, options = {}) {
 
 		return (
 			sliceAnsi(text, 0, half)
-				+ truncationCharacter
-				+ sliceAnsi(text, length - (columns - half) + stringWidth(truncationCharacter), length)
+			+ truncationCharacter
+			+ sliceAnsi(text, length - (columns - half) + stringWidth(truncationCharacter), length)
 		);
 	}
 

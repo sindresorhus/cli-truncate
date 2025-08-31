@@ -13,7 +13,7 @@ test('main', t => {
 	t.is(cliTruncate('\u001B[31municorn\u001B[39m', 7), '\u001B[31municorn\u001B[39m');
 	t.is(cliTruncate('\u001B[31municorn\u001B[39m', 1), '…');
 	t.is(cliTruncate('\u001B[31municorn\u001B[39m', 4), '\u001B[31muni\u001B[39m…');
-	t.is(cliTruncate('a\uD83C\uDE00b\uD83C\uDE00c', 5), 'a\uD83C\uDE00b\uD83C\uDE00…', 'surrogate pairs');
+	t.is(cliTruncate('a\uD83C\uDE00b\uD83C\uDE00c', 5), 'a\uD83C\uDE00b…', 'surrogate pairs');
 	t.is(cliTruncate('안녕하세요', 3), '안…', 'wide char');
 	t.is(cliTruncate('unicorn', 5, {position: 'start'}), '…corn');
 	t.is(cliTruncate('unicorn', 6, {position: 'start'}), '…icorn');
