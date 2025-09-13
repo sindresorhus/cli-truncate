@@ -93,7 +93,9 @@ cliTruncate('unicorn', 4, {position: 'middle'});
 //=> 'un…n'
 
 cliTruncate('\u001B[31municorn\u001B[39m', 4);
-//=> '\u001B[31muni\u001B[39m…'
+//=> '\u001B[31muni…\u001B[39m'
+
+// Note: When truncating styled text (ANSI escapes), the truncation character inherits the style at the breaking point for `position: 'start'` and `position: 'end'`. This does not apply to `position: 'middle'`.
 
 // Truncate Unicode surrogate pairs
 cliTruncate('uni\uD83C\uDE00corn', 5);

@@ -25,11 +25,14 @@ cliTruncate('unicorn', 4, {position: 'start'});
 cliTruncate('unicorn', 4, {position: 'middle'});
 //=> 'un…n'
 
-cliTruncate('unicorns rainbow dragons', 6, {position: 'end'})
+cliTruncate('unicorns rainbow dragons', 6, {position: 'end'});
 //=> 'unico…'
 
 cliTruncate('\u001B[31municorn\u001B[39m', 4);
-//=> '\u001B[31muni\u001B[39m…'
+//=> '\u001B[31muni…\u001B[39m'
+
+> [!NOTE]
+> When truncating styled text (ANSI escapes), the truncation character inherits the style at the breaking point for `position: 'start'` and `position: 'end'`. This does not apply to `position: 'middle'`.
 
 // Truncate Unicode surrogate pairs
 cliTruncate('uni\uD83C\uDE00corn', 5);
@@ -106,21 +109,21 @@ Truncate the string from a whitespace if it is within 3 characters from the actu
 ```js
 import cliTruncate from 'cli-truncate';
 
-cliTruncate('unicorns rainbow dragons', 20, {position: 'start', preferTruncationOnSpace: true})
+cliTruncate('unicorns rainbow dragons', 20, {position: 'start', preferTruncationOnSpace: true});
 //=> '…rainbow dragons'
 
-// without preferTruncationOnSpace
-cliTruncate('unicorns rainbow dragons', 20, {position: 'start'})
+// Without preferTruncationOnSpace
+cliTruncate('unicorns rainbow dragons', 20, {position: 'start'});
 //=> '…rns rainbow dragons'
 
-cliTruncate('unicorns rainbow dragons', 20, {position: 'middle', preferTruncationOnSpace: true})
+cliTruncate('unicorns rainbow dragons', 20, {position: 'middle', preferTruncationOnSpace: true});
 //=> 'unicorns…dragons'
 
-cliTruncate('unicorns rainbow dragons', 6, {position: 'end', preferTruncationOnSpace: true})
+cliTruncate('unicorns rainbow dragons', 6, {position: 'end', preferTruncationOnSpace: true});
 //=> 'unico…'
 
-// preferTruncationOnSpace would have no effect if space isn't found within next 3 indexes
-cliTruncate('unicorns rainbow dragons', 6, {position: 'middle', preferTruncationOnSpace: true})
+// preferTruncationOnSpace has no effect if space isn't found within 3 characters
+cliTruncate('unicorns rainbow dragons', 6, {position: 'middle', preferTruncationOnSpace: true});
 //=> 'uni…ns'
 ```
 
@@ -142,6 +145,7 @@ cliTruncate('unicorns', 5, {position: 'end', truncationCharacter: '.'});
 
 cliTruncate('unicorns', 5, {position: 'end', truncationCharacter: ''});
 //=> 'unico'
+
 ```
 
 ## Related

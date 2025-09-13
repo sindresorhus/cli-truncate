@@ -12,13 +12,12 @@ test('main', t => {
 	t.is(cliTruncate('unicorn', 6), 'unico…');
 	t.is(cliTruncate('\u001B[31municorn\u001B[39m', 7), '\u001B[31municorn\u001B[39m');
 	t.is(cliTruncate('\u001B[31municorn\u001B[39m', 1), '…');
-	t.is(cliTruncate('\u001B[31municorn\u001B[39m', 4), '\u001B[31muni\u001B[39m…');
+	t.is(cliTruncate('\u001B[31municorn\u001B[39m', 4), '\u001B[31muni…\u001B[39m');
 	t.is(cliTruncate('a\uD83C\uDE00b\uD83C\uDE00c', 5), 'a\uD83C\uDE00b…', 'surrogate pairs');
 	t.is(cliTruncate('안녕하세요', 3), '안…', 'wide char');
 	t.is(cliTruncate('unicorn', 5, {position: 'start'}), '…corn');
 	t.is(cliTruncate('unicorn', 6, {position: 'start'}), '…icorn');
 	t.is(cliTruncate('unicorn', 5, {position: 'middle'}), 'un…rn');
-	t.is(cliTruncate('unicorns', 6, {position: 'middle'}), 'uni…ns');
 	t.is(cliTruncate('unicorns', 6, {position: 'middle'}), 'uni…ns');
 });
 
@@ -27,10 +26,10 @@ test('space option', t => {
 	t.is(cliTruncate('unicorns', 6, {position: 'start', space: true}), '… orns');
 	t.is(cliTruncate('unicorns', 7, {position: 'middle', space: true}), 'uni … s');
 	t.is(cliTruncate('unicorns', 5, {position: 'end', space: false}), 'unic…');
-	t.is(cliTruncate('\u001B[31municorn\u001B[39m', 6, {space: true}), '\u001B[31munic\u001B[39m …');
+	t.is(cliTruncate('\u001B[31municorn\u001B[39m', 6, {space: true}), '\u001B[31munic …\u001B[39m');
 	t.is(cliTruncate('Plant a tree every day.', 14, {space: true}), 'Plant a tree …');
 	t.is(cliTruncate('안녕하세요', 4, {space: true}), '안 …', 'wide char');
-	t.is(cliTruncate('\u001B[31municorn\u001B[39m', 6, {position: 'start', space: true}), '… \u001B[31mcorn\u001B[39m');
+	t.is(cliTruncate('\u001B[31municorn\u001B[39m', 6, {position: 'start', space: true}), '\u001B[31m… corn\u001B[39m');
 	t.is(cliTruncate('\u001B[31municornsareawesome\u001B[39m', 10, {position: 'middle', space: true}), '\u001B[31munico\u001B[39m … \u001B[31mme\u001B[39m');
 	t.is(cliTruncate('Plant a tree every day.', 14, {position: 'middle', space: true}), 'Plant a … day.');
 	t.is(cliTruncate('안녕하세요', 4, {position: 'start', space: true}), '… 요', 'wide char');
@@ -54,4 +53,54 @@ test('truncationCharacter option', t => {
 	t.is(cliTruncate('unicorns partying with dragons', 20, {position: 'middle', truncationCharacter: '.', preferTruncationOnSpace: true}), 'unicorns.dragons');
 	t.is(cliTruncate('안녕하세요', 4, {position: 'start', space: true, truncationCharacter: '.'}), '. 요', 'wide char');
 	t.is(cliTruncate('\u001B[31municornsareawesome\u001B[39m', 10, {position: 'middle', space: true, truncationCharacter: '.'}), '\u001B[31munico\u001B[39m . \u001B[31mme\u001B[39m');
+});
+
+test('custom truncation character inherits style (end/start)', t => {
+	const red = '\u001B[31m';
+	const reset = '\u001B[39m';
+	const text = `${red}unicorns${reset}`;
+	const endOut = cliTruncate(text, 5, {truncationCharacter: '.'});
+	const startOut = cliTruncate(text, 5, {position: 'start', truncationCharacter: '.'});
+	t.true(endOut.startsWith(red));
+	t.true(endOut.includes('.'));
+	t.true(endOut.endsWith(reset));
+	t.true(startOut.startsWith(red));
+	t.true(startOut.includes('.'));
+	t.true(startOut.endsWith(reset));
+});
+
+test('styled truncation character inherits for start and end', t => {
+	const red = '\u001B[31m';
+	const cyan = '\u001B[36m';
+	const reset = '\u001B[39m';
+
+	// Test end position
+	const endText = `${red}unicorns${reset}`;
+	const endOut = cliTruncate(endText, 5);
+	t.is(endOut, `${red}unic…${reset}`);
+
+	// Test start position
+	const startText = `hello ${cyan}unicorns${reset}`;
+	const startOut = cliTruncate(startText, 5, {position: 'start'});
+	t.true(startOut.startsWith(cyan));
+	t.true(startOut.includes('…'));
+	t.true(startOut.endsWith(reset));
+});
+
+test('edge cases', t => {
+	// Empty string
+	t.is(cliTruncate('', 5), '');
+
+	// Whitespace only
+	t.is(cliTruncate('     ', 3), '  …');
+
+	// Multiple ANSI codes
+	const multiAnsi = '\u001B[31m\u001B[1municorns\u001B[22m\u001B[39m';
+	t.is(cliTruncate(multiAnsi, 5), '\u001B[31m\u001B[1munic…\u001B[22m\u001B[39m');
+
+	// Columns = 2
+	t.is(cliTruncate('test', 2), 't…');
+
+	// Very long truncation character
+	t.is(cliTruncate('unicorns', 5, {truncationCharacter: '...'}), 'un...');
 });
