@@ -104,3 +104,25 @@ test('edge cases', t => {
 	// Very long truncation character
 	t.is(cliTruncate('unicorns', 5, {truncationCharacter: '...'}), 'un...');
 });
+
+test('preserves ANSI escape codes at the end - issue #24', t => {
+	const red = '\u001B[31m';
+	const reset = '\u001B[39m';
+
+	// Text with ANSI codes at the end
+	const text = `Hello ${red}World${reset}`;
+
+	// When not truncated, preserve everything
+	t.is(cliTruncate(text, 11), `Hello ${red}World${reset}`);
+
+	// When truncated at the end, ellipsis should inherit the style
+	t.is(cliTruncate(text, 8), `Hello ${red}W…${reset}`);
+
+	// When truncated at start
+	t.is(cliTruncate(text, 8, {position: 'start'}), `…o ${red}World${reset}`);
+
+	// Text ending with reset only
+	const textEndingWithReset = `Hello World${reset}`;
+	t.is(cliTruncate(textEndingWithReset, 11), `Hello World${reset}`);
+	t.is(cliTruncate(textEndingWithReset, 8), 'Hello W…');
+});
