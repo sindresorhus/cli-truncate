@@ -39,14 +39,14 @@ export default function cliTruncate(text, columns, options = {}) {
 		return '';
 	}
 
-	if (columns === 1) {
-		return truncationCharacter;
-	}
-
 	const length = stringWidth(text);
 
 	if (length <= columns) {
 		return text;
+	}
+
+	if (columns === 1) {
+		return truncationCharacter;
 	}
 
 	// ANSI escape sequence constants
