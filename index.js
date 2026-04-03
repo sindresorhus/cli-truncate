@@ -114,6 +114,17 @@ export default function cliTruncate(text, columns, options = {}) {
 		return visible.slice(0, end) + prefix + visible.slice(end);
 	}
 
+	// Workaround: sliceAnsi rounds up when the boundary falls inside a wide character (https://github.com/chalk/slice-ansi/issues/43).
+	// Re-slice with a 1-column narrower range to stay within bounds.
+	function safeSliceAnsi(text, beginColumn, endColumn) {
+		const sliced = sliceAnsi(text, beginColumn, endColumn);
+		if (stringWidth(sliced) > endColumn - beginColumn) {
+			return sliceAnsi(text, beginColumn, endColumn - 1);
+		}
+
+		return sliced;
+	}
+
 	if (position === 'start') {
 		if (preferTruncationOnSpace) {
 			const nearestSpace = getIndexOfNearestSpace(text, length - columns + 1, true);
@@ -125,7 +136,7 @@ export default function cliTruncate(text, columns, options = {}) {
 			truncationCharacter += ' ';
 		}
 
-		const right = sliceAnsi(text, length - columns + stringWidth(truncationCharacter), length);
+		const right = safeSliceAnsi(text, length - columns + stringWidth(truncationCharacter), length);
 		return prependWithInheritedStyleFromStart(truncationCharacter, right);
 	}
 
@@ -142,10 +153,14 @@ export default function cliTruncate(text, columns, options = {}) {
 			return sliceAnsi(text, 0, spaceNearFirstBreakPoint) + truncationCharacter + sliceAnsi(text, spaceNearSecondBreakPoint, length).trim();
 		}
 
+		const truncationWidth = stringWidth(truncationCharacter);
+		const left = safeSliceAnsi(text, 0, half);
+		const rightColumns = columns - stringWidth(left) - truncationWidth;
+		const right = safeSliceAnsi(text, length - rightColumns, length);
 		return (
-			sliceAnsi(text, 0, half)
+			left
 			+ truncationCharacter
-			+ sliceAnsi(text, length - (columns - half) + stringWidth(truncationCharacter), length)
+			+ right
 		);
 	}
 
@@ -160,7 +175,7 @@ export default function cliTruncate(text, columns, options = {}) {
 			truncationCharacter = ` ${truncationCharacter}`;
 		}
 
-		const left = sliceAnsi(text, 0, columns - stringWidth(truncationCharacter));
+		const left = safeSliceAnsi(text, 0, columns - stringWidth(truncationCharacter));
 		return appendWithInheritedStyleFromEnd(left, truncationCharacter);
 	}
 

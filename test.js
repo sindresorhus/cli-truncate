@@ -1,4 +1,5 @@
 import test from 'ava';
+import stringWidth from 'string-width';
 import cliTruncate from './index.js';
 
 test('main', t => {
@@ -126,4 +127,29 @@ test('preserves ANSI escape codes at the end - issue #24', t => {
 	const textEndingWithReset = `Hello World${reset}`;
 	t.is(cliTruncate(textEndingWithReset, 11), `Hello World${reset}`);
 	t.is(cliTruncate(textEndingWithReset, 8), 'Hello W…');
+});
+
+test('wide characters should not exceed maxWidth - issue #28', t => {
+	const cjk = 'あいうえおかきくけこ|end';
+
+	// End position: every maxWidth should produce output within bounds
+	for (let width = 1; width <= 25; width++) {
+		const result = cliTruncate(cjk, width);
+		const actual = stringWidth(result);
+		t.true(actual <= width, `end: maxWidth=${width} → displayWidth=${actual} (${result})`);
+	}
+
+	// Start position
+	for (let width = 1; width <= 25; width++) {
+		const result = cliTruncate(cjk, width, {position: 'start'});
+		const actual = stringWidth(result);
+		t.true(actual <= width, `start: maxWidth=${width} → displayWidth=${actual} (${result})`);
+	}
+
+	// Middle position
+	for (let width = 1; width <= 25; width++) {
+		const result = cliTruncate(cjk, width, {position: 'middle'});
+		const actual = stringWidth(result);
+		t.true(actual <= width, `middle: maxWidth=${width} → displayWidth=${actual} (${result})`);
+	}
 });
