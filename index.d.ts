@@ -114,5 +114,5 @@ cliTruncate(paragraph, process.stdout.columns);
 export default function cliTruncate(
 	text: string,
 	columns: number,
-	options?: Options
+	options?: Options,
 ): string;

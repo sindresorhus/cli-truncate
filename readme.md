@@ -145,7 +145,6 @@ cliTruncate('unicorns', 5, {position: 'end', truncationCharacter: '.'});
 
 cliTruncate('unicorns', 5, {position: 'end', truncationCharacter: ''});
 //=> 'unico'
-
 ```
 
 ## Related

@@ -1,4 +1,5 @@
 import test from 'ava';
+import stringWidth from 'string-width';
 import cliTruncate from './index.js';
 
 test('main', t => {
@@ -126,4 +127,23 @@ test('preserves ANSI escape codes at the end - issue #24', t => {
 	const textEndingWithReset = `Hello World${reset}`;
 	t.is(cliTruncate(textEndingWithReset, 11), `Hello World${reset}`);
 	t.is(cliTruncate(textEndingWithReset, 8), 'Hello W…');
+});
+
+test('wide characters should not exceed maxWidth - issue #28', t => {
+	const cjk = 'あいうえおかきくけこ|end';
+
+	for (let columns = 1; columns <= 25; columns++) {
+		const result = cliTruncate(cjk, columns);
+		t.true(stringWidth(result) <= columns, `end: width ${stringWidth(result)} exceeds maxWidth ${columns} for result "${result}"`);
+	}
+
+	for (let columns = 1; columns <= 25; columns++) {
+		const result = cliTruncate(cjk, columns, {position: 'start'});
+		t.true(stringWidth(result) <= columns, `start: width ${stringWidth(result)} exceeds maxWidth ${columns} for result "${result}"`);
+	}
+
+	for (let columns = 1; columns <= 25; columns++) {
+		const result = cliTruncate(cjk, columns, {position: 'middle'});
+		t.true(stringWidth(result) <= columns, `middle: width ${stringWidth(result)} exceeds maxWidth ${columns} for result "${result}"`);
+	}
 });
