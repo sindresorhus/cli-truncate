@@ -35,6 +35,13 @@ test('space option', t => {
 	t.is(cliTruncate('\u001B[31municornsareawesome\u001B[39m', 10, {position: 'middle', space: true}), '\u001B[31munico\u001B[39m … \u001B[31mme\u001B[39m');
 	t.is(cliTruncate('Plant a tree every day.', 14, {position: 'middle', space: true}), 'Plant a … day.');
 	t.is(cliTruncate('안녕하세요', 4, {position: 'start', space: true}), '… 요', 'wide char');
+
+	// `middle` + `space` must stay within the budget for small widths
+	t.is(cliTruncate('unicorns', 2, {position: 'middle', space: true}), 'u…');
+	t.is(cliTruncate('unicorns', 3, {position: 'middle', space: true}), 'u…s');
+	for (const columns of [2, 3, 4, 5, 6, 7]) {
+		t.true(stringWidth(cliTruncate('unicorns', columns, {position: 'middle', space: true})) <= columns, `width <= ${columns}`);
+	}
 });
 
 test('preferTruncationOnSpace option', t => {
