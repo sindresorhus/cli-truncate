@@ -132,20 +132,30 @@ export default function cliTruncate(text, columns, options = {}) {
 	if (position === 'middle') {
 		if (space) {
 			truncationCharacter = ` ${truncationCharacter} `;
+
+			// Drop the padding spaces if the padded character does not fit, so the
+			// truncation character itself never exceeds the budget.
+			if (stringWidth(truncationCharacter) >= columns) {
+				truncationCharacter = truncationCharacter.trim();
+			}
 		}
 
-		const half = Math.floor(columns / 2);
+		const truncationWidth = stringWidth(truncationCharacter);
+		// Reserve room for the truncation character before splitting the budget
+		// between the two sides, otherwise small budgets overflow (e.g. a width of
+		// 4 was returned for `columns: 2`).
+		const half = Math.min(Math.floor(columns / 2), Math.max(0, columns - truncationWidth));
 
 		if (preferTruncationOnSpace) {
 			const spaceNearFirstBreakPoint = getIndexOfNearestSpace(text, half);
-			const spaceNearSecondBreakPoint = getIndexOfNearestSpace(text, length - (columns - half) + 1, true);
+			const spaceNearSecondBreakPoint = getIndexOfNearestSpace(text, length - (columns - half) + truncationWidth, true);
 			return sliceAnsi(text, 0, spaceNearFirstBreakPoint) + truncationCharacter + sliceAnsi(text, spaceNearSecondBreakPoint, length).trim();
 		}
 
 		return (
 			sliceAnsi(text, 0, half)
 			+ truncationCharacter
-			+ sliceAnsi(text, length - (columns - half) + stringWidth(truncationCharacter), length)
+			+ sliceAnsi(text, length - (columns - half) + truncationWidth, length)
 		);
 	}
 
