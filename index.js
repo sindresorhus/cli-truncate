@@ -148,7 +148,7 @@ export default function cliTruncate(text, columns, options = {}) {
 
 		if (preferTruncationOnSpace) {
 			const spaceNearFirstBreakPoint = getIndexOfNearestSpace(text, half);
-			const spaceNearSecondBreakPoint = getIndexOfNearestSpace(text, length - (columns - half) + 1, true);
+			const spaceNearSecondBreakPoint = getIndexOfNearestSpace(text, length - (columns - half) + truncationWidth, true);
 			return sliceAnsi(text, 0, spaceNearFirstBreakPoint) + truncationCharacter + sliceAnsi(text, spaceNearSecondBreakPoint, length).trim();
 		}
 

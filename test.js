@@ -51,6 +51,12 @@ test('preferTruncationOnSpace option', t => {
 	t.is(cliTruncate('unicorns rainbow dragons', 6, {position: 'end', preferTruncationOnSpace: true}), 'unico…');
 	t.is(cliTruncate('unicorns rainbow dragons', 6, {position: 'middle', preferTruncationOnSpace: true}), 'uni…ns');
 	t.is(cliTruncate('unicorns partying with dragons', 20, {position: 'middle', preferTruncationOnSpace: true}), 'unicorns…dragons');
+
+	// `middle` + `space` + `preferTruncationOnSpace` must stay within the budget
+	t.is(cliTruncate('unicorns', 4, {position: 'middle', space: true, preferTruncationOnSpace: true}), 'u … ');
+	for (const columns of [2, 3, 4, 5, 6, 7]) {
+		t.true(stringWidth(cliTruncate('unicorns', columns, {position: 'middle', space: true, preferTruncationOnSpace: true})) <= columns, `width <= ${columns}`);
+	}
 });
 
 test('truncationCharacter option', t => {
