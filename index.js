@@ -35,6 +35,13 @@ export default function cliTruncate(text, columns, options = {}) {
 		throw new TypeError(`Expected \`columns\` to be a number, got ${typeof columns}`);
 	}
 
+	// A `NaN` budget (e.g. `process.stdout.columns - n` when stdout is not a TTY)
+	// means the target width is unknown — return the text untruncated rather than
+	// appending a truncation character to the full string.
+	if (Number.isNaN(columns)) {
+		return text;
+	}
+
 	if (columns < 1) {
 		return '';
 	}

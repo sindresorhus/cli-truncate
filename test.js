@@ -23,6 +23,11 @@ test('main', t => {
 	t.is(cliTruncate('u', 1), 'u');
 });
 
+test('NaN columns', t => {
+	t.is(cliTruncate('unicorns', Number.NaN), 'unicorns');
+	t.is(cliTruncate('\u001B[31municorns\u001B[39m', Number.NaN), '\u001B[31municorns\u001B[39m');
+});
+
 test('space option', t => {
 	t.is(cliTruncate('unicorns', 5, {position: 'end', space: true}), 'uni …');
 	t.is(cliTruncate('unicorns', 6, {position: 'start', space: true}), '… orns');
