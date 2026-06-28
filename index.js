@@ -1,6 +1,8 @@
 import sliceAnsi from 'slice-ansi';
 import stringWidth from 'string-width';
 
+const validPositions = new Set(['start', 'middle', 'end']);
+
 function getIndexOfNearestSpace(string, wantedIndex, shouldSearchRight) {
 	if (string.charAt(wantedIndex) === ' ') {
 		return wantedIndex;
@@ -18,6 +20,28 @@ function getIndexOfNearestSpace(string, wantedIndex, shouldSearchRight) {
 	return wantedIndex;
 }
 
+function validateInput(text, columns, position, truncationCharacter) {
+	if (typeof text !== 'string') {
+		throw new TypeError(`Expected \`input\` to be a string, got ${typeof text}`);
+	}
+
+	if (typeof columns !== 'number') {
+		throw new TypeError(`Expected \`columns\` to be a number, got ${typeof columns}`);
+	}
+
+	if (!Number.isFinite(columns)) {
+		throw new TypeError(`Expected \`columns\` to be a finite number, got ${columns}`);
+	}
+
+	if (!validPositions.has(position)) {
+		throw new TypeError(`Expected \`options.position\` to be either \`start\`, \`middle\` or \`end\`, got ${position}`);
+	}
+
+	if (typeof truncationCharacter !== 'string') {
+		throw new TypeError(`Expected \`options.truncationCharacter\` to be a string, got ${typeof truncationCharacter}`);
+	}
+}
+
 export default function cliTruncate(text, columns, options = {}) {
 	const {
 		position = 'end',
@@ -27,13 +51,7 @@ export default function cliTruncate(text, columns, options = {}) {
 
 	let {truncationCharacter = '…'} = options;
 
-	if (typeof text !== 'string') {
-		throw new TypeError(`Expected \`input\` to be a string, got ${typeof text}`);
-	}
-
-	if (typeof columns !== 'number') {
-		throw new TypeError(`Expected \`columns\` to be a number, got ${typeof columns}`);
-	}
+	validateInput(text, columns, position, truncationCharacter);
 
 	if (columns < 1) {
 		return '';
@@ -173,6 +191,4 @@ export default function cliTruncate(text, columns, options = {}) {
 		const left = sliceAnsi(text, 0, columns - stringWidth(truncationCharacter));
 		return appendWithInheritedStyleFromEnd(left, truncationCharacter);
 	}
-
-	throw new Error(`Expected \`options.position\` to be either \`start\`, \`middle\` or \`end\`, got ${position}`);
 }

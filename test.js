@@ -23,6 +23,28 @@ test('main', t => {
 	t.is(cliTruncate('u', 1), 'u');
 });
 
+test('non-finite columns', t => {
+	for (const columns of [Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY]) {
+		t.throws(() => {
+			cliTruncate('unicorns', columns);
+		}, {
+			instanceOf: TypeError,
+			message: `Expected \`columns\` to be a finite number, got ${columns}`,
+		});
+	}
+});
+
+test('position option validation', t => {
+	for (const text of ['u', 'unicorns']) {
+		t.throws(() => {
+			cliTruncate(text, 20, {position: 'sideways'});
+		}, {
+			instanceOf: TypeError,
+			message: 'Expected `options.position` to be either `start`, `middle` or `end`, got sideways',
+		});
+	}
+});
+
 test('space option', t => {
 	t.is(cliTruncate('unicorns', 5, {position: 'end', space: true}), 'uni …');
 	t.is(cliTruncate('unicorns', 6, {position: 'start', space: true}), '… orns');
@@ -68,6 +90,14 @@ test('truncationCharacter option', t => {
 	t.is(cliTruncate('unicorns partying with dragons', 20, {position: 'middle', truncationCharacter: '.', preferTruncationOnSpace: true}), 'unicorns.dragons');
 	t.is(cliTruncate('안녕하세요', 4, {position: 'start', space: true, truncationCharacter: '.'}), '. 요', 'wide char');
 	t.is(cliTruncate('\u001B[31municornsareawesome\u001B[39m', 10, {position: 'middle', space: true, truncationCharacter: '.'}), '\u001B[31munico\u001B[39m . \u001B[31mme\u001B[39m');
+	for (const columns of [0, 1, 20]) {
+		t.throws(() => {
+			cliTruncate('unicorns', columns, {truncationCharacter: 1});
+		}, {
+			instanceOf: TypeError,
+			message: 'Expected `options.truncationCharacter` to be a string, got number',
+		});
+	}
 });
 
 test('custom truncation character inherits style (end/start)', t => {

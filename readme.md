@@ -44,7 +44,7 @@ cliTruncate('안녕하세요', 3);
 
 // Truncate the paragraph to the terminal width
 const paragraph = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.';
-cliTruncate(paragraph, process.stdout.columns);
+cliTruncate(paragraph, process.stdout.columns ?? 80);
 //=> 'Lorem ipsum dolor sit amet, consectetuer adipiscing…'
 ```
 
@@ -62,7 +62,7 @@ The text to truncate.
 
 Type: `number`
 
-The number of columns to occupy in the terminal.
+The finite number of columns to occupy in the terminal.
 
 #### options
 
