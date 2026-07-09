@@ -66,6 +66,20 @@ test('space option', t => {
 	}
 });
 
+test('preferTruncationOnSpace respects a multi-column truncation character', t => {
+	const text = 'unicorns are awesome dragons here today';
+
+	t.is(cliTruncate(text, 6, {position: 'end', preferTruncationOnSpace: true, truncationCharacter: '...'}), 'uni...');
+	t.is(cliTruncate(text, 6, {position: 'start', preferTruncationOnSpace: true, truncationCharacter: '...'}), '...day');
+
+	for (const position of ['start', 'end']) {
+		for (let columns = 4; columns <= 20; columns++) {
+			const result = cliTruncate(text, columns, {position, preferTruncationOnSpace: true, truncationCharacter: '...'});
+			t.true(stringWidth(result) <= columns, `${position}: width ${stringWidth(result)} exceeds ${columns} for "${result}"`);
+		}
+	}
+});
+
 test('preferTruncationOnSpace option', t => {
 	t.is(cliTruncate('unicorns are awesome', 15, {position: 'start', preferTruncationOnSpace: true}), '…are awesome');
 	t.is(cliTruncate('dragons are awesome', 15, {position: 'end', preferTruncationOnSpace: true}), 'dragons are…');

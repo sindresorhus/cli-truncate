@@ -134,7 +134,7 @@ export default function cliTruncate(text, columns, options = {}) {
 
 	if (position === 'start') {
 		if (preferTruncationOnSpace) {
-			const nearestSpace = getIndexOfNearestSpace(text, length - columns + 1, true);
+			const nearestSpace = getIndexOfNearestSpace(text, length - columns + stringWidth(truncationCharacter), true);
 			const right = sliceAnsi(text, nearestSpace, length).trim();
 			return prependWithInheritedStyleFromStart(truncationCharacter, right);
 		}
@@ -179,7 +179,7 @@ export default function cliTruncate(text, columns, options = {}) {
 
 	if (position === 'end') {
 		if (preferTruncationOnSpace) {
-			const nearestSpace = getIndexOfNearestSpace(text, columns - 1);
+			const nearestSpace = getIndexOfNearestSpace(text, columns - stringWidth(truncationCharacter));
 			const left = sliceAnsi(text, 0, nearestSpace);
 			return appendWithInheritedStyleFromEnd(left, truncationCharacter);
 		}
