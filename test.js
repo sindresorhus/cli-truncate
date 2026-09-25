@@ -1,206 +1,205 @@
-import test from 'ava';
+import test from 'node:test';
+import assert from 'node:assert/strict';
 import stringWidth from 'string-width';
 import cliTruncate from './index.js';
 
-test('main', t => {
-	t.is(cliTruncate('unicorn', 4), 'uni…');
-	t.is(cliTruncate('unicorn', 4, {position: 'end'}), 'uni…');
-	t.is(cliTruncate('unicorn', 1), '…');
-	t.is(cliTruncate('unicorn', 0), '');
-	t.is(cliTruncate('unicorn', -4), '');
-	t.is(cliTruncate('unicorn', 20), 'unicorn');
-	t.is(cliTruncate('unicorn', 7), 'unicorn');
-	t.is(cliTruncate('unicorn', 6), 'unico…');
-	t.is(cliTruncate('\u001B[31municorn\u001B[39m', 7), '\u001B[31municorn\u001B[39m');
-	t.is(cliTruncate('\u001B[31municorn\u001B[39m', 1), '…');
-	t.is(cliTruncate('\u001B[31municorn\u001B[39m', 4), '\u001B[31muni…\u001B[39m');
-	t.is(cliTruncate('a\uD83C\uDE00b\uD83C\uDE00c', 5), 'a\uD83C\uDE00b…', 'surrogate pairs');
-	t.is(cliTruncate('안녕하세요', 3), '안…', 'wide char');
-	t.is(cliTruncate('unicorn', 5, {position: 'start'}), '…corn');
-	t.is(cliTruncate('unicorn', 6, {position: 'start'}), '…icorn');
-	t.is(cliTruncate('unicorn', 5, {position: 'middle'}), 'un…rn');
-	t.is(cliTruncate('unicorns', 6, {position: 'middle'}), 'uni…ns');
-	t.is(cliTruncate('u', 1), 'u');
+/* eslint-disable node-test/no-conditional-assertion -- The loops in this file are table-driven, so every assertion always runs. */
+
+// `assert.throws` only duck-types `name`, so a plain object or a same-named class
+// would pass. The predicate keeps the `instanceof TypeError` check AVA had.
+const throwsTypeError = message => error => error instanceof TypeError && error.message === message;
+
+test('truncates text to the given number of columns', () => {
+	assert.equal(cliTruncate('unicorn', 4), 'uni…');
+	assert.equal(cliTruncate('unicorn', 4, {position: 'end'}), 'uni…');
+	assert.equal(cliTruncate('unicorn', 1), '…');
+	assert.equal(cliTruncate('unicorn', 0), '');
+	assert.equal(cliTruncate('unicorn', -4), '');
+	assert.equal(cliTruncate('unicorn', 20), 'unicorn');
+	assert.equal(cliTruncate('unicorn', 7), 'unicorn');
+	assert.equal(cliTruncate('unicorn', 6), 'unico…');
+	assert.equal(cliTruncate('\u{1B}[31municorn\u{1B}[39m', 7), '\u{1B}[31municorn\u{1B}[39m');
+	assert.equal(cliTruncate('\u{1B}[31municorn\u{1B}[39m', 1), '…');
+	assert.equal(cliTruncate('\u{1B}[31municorn\u{1B}[39m', 4), '\u{1B}[31muni…\u{1B}[39m');
+	assert.equal(cliTruncate('a\u{1F200}b\u{1F200}c', 5), 'a\u{1F200}b…', 'surrogate pairs');
+	assert.equal(cliTruncate('안녕하세요', 3), '안…', 'wide char');
+	assert.equal(cliTruncate('unicorn', 5, {position: 'start'}), '…corn');
+	assert.equal(cliTruncate('unicorn', 6, {position: 'start'}), '…icorn');
+	assert.equal(cliTruncate('unicorn', 5, {position: 'middle'}), 'un…rn');
+	assert.equal(cliTruncate('unicorns', 6, {position: 'middle'}), 'uni…ns');
+	assert.equal(cliTruncate('u', 1), 'u');
 });
 
-test('non-finite columns', t => {
-	for (const columns of [Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY]) {
-		t.throws(() => {
+test('throws on non-finite columns', () => {
+	for (const columns of [NaN, Infinity, -Infinity]) {
+		assert.throws(() => {
 			cliTruncate('unicorns', columns);
-		}, {
-			instanceOf: TypeError,
-			message: `Expected \`columns\` to be a finite number, got ${columns}`,
-		});
+		}, throwsTypeError(`Expected \`columns\` to be a finite number, got ${columns}`));
 	}
 });
 
-test('position option validation', t => {
+test('validates the position option', () => {
 	for (const text of ['u', 'unicorns']) {
-		t.throws(() => {
+		assert.throws(() => {
 			cliTruncate(text, 20, {position: 'sideways'});
-		}, {
-			instanceOf: TypeError,
-			message: 'Expected `options.position` to be either `start`, `middle` or `end`, got sideways',
-		});
+		}, throwsTypeError('Expected `options.position` to be either `start`, `middle` or `end`, got sideways'));
 	}
 });
 
-test('space option', t => {
-	t.is(cliTruncate('unicorns', 5, {position: 'end', space: true}), 'uni …');
-	t.is(cliTruncate('unicorns', 6, {position: 'start', space: true}), '… orns');
-	t.is(cliTruncate('unicorns', 7, {position: 'middle', space: true}), 'uni … s');
-	t.is(cliTruncate('unicorns', 5, {position: 'end', space: false}), 'unic…');
-	t.is(cliTruncate('\u001B[31municorn\u001B[39m', 6, {space: true}), '\u001B[31munic …\u001B[39m');
-	t.is(cliTruncate('Plant a tree every day.', 14, {space: true}), 'Plant a tree …');
-	t.is(cliTruncate('안녕하세요', 4, {space: true}), '안 …', 'wide char');
-	t.is(cliTruncate('\u001B[31municorn\u001B[39m', 6, {position: 'start', space: true}), '\u001B[31m… corn\u001B[39m');
-	t.is(cliTruncate('\u001B[31municornsareawesome\u001B[39m', 10, {position: 'middle', space: true}), '\u001B[31munico\u001B[39m … \u001B[31mme\u001B[39m');
-	t.is(cliTruncate('Plant a tree every day.', 14, {position: 'middle', space: true}), 'Plant a … day.');
-	t.is(cliTruncate('안녕하세요', 4, {position: 'start', space: true}), '… 요', 'wide char');
+test('space option', () => {
+	assert.equal(cliTruncate('unicorns', 5, {position: 'end', space: true}), 'uni …');
+	assert.equal(cliTruncate('unicorns', 6, {position: 'start', space: true}), '… orns');
+	assert.equal(cliTruncate('unicorns', 7, {position: 'middle', space: true}), 'uni … s');
+	assert.equal(cliTruncate('unicorns', 5, {position: 'end', space: false}), 'unic…');
+	assert.equal(cliTruncate('\u{1B}[31municorn\u{1B}[39m', 6, {space: true}), '\u{1B}[31munic …\u{1B}[39m');
+	assert.equal(cliTruncate('Plant a tree every day.', 14, {space: true}), 'Plant a tree …');
+	assert.equal(cliTruncate('안녕하세요', 4, {space: true}), '안 …', 'wide char');
+	assert.equal(cliTruncate('\u{1B}[31municorn\u{1B}[39m', 6, {position: 'start', space: true}), '\u{1B}[31m… corn\u{1B}[39m');
+	assert.equal(cliTruncate('\u{1B}[31municornsareawesome\u{1B}[39m', 10, {position: 'middle', space: true}), '\u{1B}[31munico\u{1B}[39m … \u{1B}[31mme\u{1B}[39m');
+	assert.equal(cliTruncate('Plant a tree every day.', 14, {position: 'middle', space: true}), 'Plant a … day.');
+	assert.equal(cliTruncate('안녕하세요', 4, {position: 'start', space: true}), '… 요', 'wide char');
 
 	// `middle` + `space` must stay within the budget for small widths
-	t.is(cliTruncate('unicorns', 2, {position: 'middle', space: true}), 'u…');
-	t.is(cliTruncate('unicorns', 3, {position: 'middle', space: true}), 'u…s');
+	assert.equal(cliTruncate('unicorns', 2, {position: 'middle', space: true}), 'u…');
+	assert.equal(cliTruncate('unicorns', 3, {position: 'middle', space: true}), 'u…s');
 	for (const columns of [2, 3, 4, 5, 6, 7]) {
-		t.true(stringWidth(cliTruncate('unicorns', columns, {position: 'middle', space: true})) <= columns, `width <= ${columns}`);
+		assert.ok(stringWidth(cliTruncate('unicorns', columns, {position: 'middle', space: true})) <= columns, `width <= ${columns}`);
 	}
 });
 
-test('preferTruncationOnSpace respects a multi-column truncation character', t => {
+test('preferTruncationOnSpace respects a multi-column truncation character', () => {
 	const text = 'unicorns are awesome dragons here today';
 
-	t.is(cliTruncate(text, 6, {position: 'end', preferTruncationOnSpace: true, truncationCharacter: '...'}), 'uni...');
-	t.is(cliTruncate(text, 6, {position: 'start', preferTruncationOnSpace: true, truncationCharacter: '...'}), '...day');
+	assert.equal(cliTruncate(text, 6, {position: 'end', preferTruncationOnSpace: true, truncationCharacter: '...'}), 'uni...');
+	assert.equal(cliTruncate(text, 6, {position: 'start', preferTruncationOnSpace: true, truncationCharacter: '...'}), '...day');
 
 	for (const position of ['start', 'end']) {
 		for (let columns = 4; columns <= 20; columns++) {
 			const result = cliTruncate(text, columns, {position, preferTruncationOnSpace: true, truncationCharacter: '...'});
-			t.true(stringWidth(result) <= columns, `${position}: width ${stringWidth(result)} exceeds ${columns} for "${result}"`);
+			assert.ok(stringWidth(result) <= columns, `${position}: width ${stringWidth(result)} exceeds ${columns} for "${result}"`);
 		}
 	}
 });
 
-test('preferTruncationOnSpace option', t => {
-	t.is(cliTruncate('unicorns are awesome', 15, {position: 'start', preferTruncationOnSpace: true}), '…are awesome');
-	t.is(cliTruncate('dragons are awesome', 15, {position: 'end', preferTruncationOnSpace: true}), 'dragons are…');
-	t.is(cliTruncate('unicorns rainbow dragons', 6, {position: 'start', preferTruncationOnSpace: true}), '…agons');
-	t.is(cliTruncate('unicorns rainbow dragons', 6, {position: 'end', preferTruncationOnSpace: true}), 'unico…');
-	t.is(cliTruncate('unicorns rainbow dragons', 6, {position: 'middle', preferTruncationOnSpace: true}), 'uni…ns');
-	t.is(cliTruncate('unicorns partying with dragons', 20, {position: 'middle', preferTruncationOnSpace: true}), 'unicorns…dragons');
+test('preferTruncationOnSpace option', () => {
+	assert.equal(cliTruncate('unicorns are awesome', 15, {position: 'start', preferTruncationOnSpace: true}), '…are awesome');
+	assert.equal(cliTruncate('dragons are awesome', 15, {position: 'end', preferTruncationOnSpace: true}), 'dragons are…');
+	assert.equal(cliTruncate('unicorns rainbow dragons', 6, {position: 'start', preferTruncationOnSpace: true}), '…agons');
+	assert.equal(cliTruncate('unicorns rainbow dragons', 6, {position: 'end', preferTruncationOnSpace: true}), 'unico…');
+	assert.equal(cliTruncate('unicorns rainbow dragons', 6, {position: 'middle', preferTruncationOnSpace: true}), 'uni…ns');
+	assert.equal(cliTruncate('unicorns partying with dragons', 20, {position: 'middle', preferTruncationOnSpace: true}), 'unicorns…dragons');
 
 	// `middle` + `space` + `preferTruncationOnSpace` must stay within the budget
-	t.is(cliTruncate('unicorns', 4, {position: 'middle', space: true, preferTruncationOnSpace: true}), 'u … ');
+	assert.equal(cliTruncate('unicorns', 4, {position: 'middle', space: true, preferTruncationOnSpace: true}), 'u … ');
 	for (const columns of [2, 3, 4, 5, 6, 7]) {
-		t.true(stringWidth(cliTruncate('unicorns', columns, {position: 'middle', space: true, preferTruncationOnSpace: true})) <= columns, `width <= ${columns}`);
+		assert.ok(stringWidth(cliTruncate('unicorns', columns, {position: 'middle', space: true, preferTruncationOnSpace: true})) <= columns, `width <= ${columns}`);
 	}
 });
 
-test('truncationCharacter option', t => {
-	t.is(cliTruncate('unicorns', 5, {position: 'end', truncationCharacter: '.'}), 'unic.');
-	t.is(cliTruncate('unicorns', 5, {position: 'start', truncationCharacter: '.'}), '.orns');
-	t.is(cliTruncate('unicorns', 5, {position: 'middle', truncationCharacter: '.'}), 'un.ns');
-	t.is(cliTruncate('unicorns', 5, {position: 'end', truncationCharacter: '.', space: true}), 'uni .');
-	t.is(cliTruncate('unicorns', 5, {position: 'end', truncationCharacter: ' .'}), 'uni .');
-	t.is(cliTruncate('unicorns partying with dragons', 20, {position: 'middle', truncationCharacter: '.', preferTruncationOnSpace: true}), 'unicorns.dragons');
-	t.is(cliTruncate('안녕하세요', 4, {position: 'start', space: true, truncationCharacter: '.'}), '. 요', 'wide char');
-	t.is(cliTruncate('\u001B[31municornsareawesome\u001B[39m', 10, {position: 'middle', space: true, truncationCharacter: '.'}), '\u001B[31munico\u001B[39m . \u001B[31mme\u001B[39m');
+test('truncationCharacter option', () => {
+	assert.equal(cliTruncate('unicorns', 5, {position: 'end', truncationCharacter: '.'}), 'unic.');
+	assert.equal(cliTruncate('unicorns', 5, {position: 'start', truncationCharacter: '.'}), '.orns');
+	assert.equal(cliTruncate('unicorns', 5, {position: 'middle', truncationCharacter: '.'}), 'un.ns');
+	assert.equal(cliTruncate('unicorns', 5, {position: 'end', truncationCharacter: '.', space: true}), 'uni .');
+	assert.equal(cliTruncate('unicorns', 5, {position: 'end', truncationCharacter: ' .'}), 'uni .');
+	assert.equal(cliTruncate('unicorns partying with dragons', 20, {position: 'middle', truncationCharacter: '.', preferTruncationOnSpace: true}), 'unicorns.dragons');
+	assert.equal(cliTruncate('안녕하세요', 4, {position: 'start', space: true, truncationCharacter: '.'}), '. 요', 'wide char');
+	assert.equal(cliTruncate('\u{1B}[31municornsareawesome\u{1B}[39m', 10, {position: 'middle', space: true, truncationCharacter: '.'}), '\u{1B}[31munico\u{1B}[39m . \u{1B}[31mme\u{1B}[39m');
 	for (const columns of [0, 1, 20]) {
-		t.throws(() => {
+		assert.throws(() => {
 			cliTruncate('unicorns', columns, {truncationCharacter: 1});
-		}, {
-			instanceOf: TypeError,
-			message: 'Expected `options.truncationCharacter` to be a string, got number',
-		});
+		}, throwsTypeError('Expected `options.truncationCharacter` to be a string, got number'));
 	}
 });
 
-test('custom truncation character inherits style (end/start)', t => {
-	const red = '\u001B[31m';
-	const reset = '\u001B[39m';
+test('custom truncation character inherits style (end/start)', () => {
+	const red = '\u{1B}[31m';
+	const reset = '\u{1B}[39m';
 	const text = `${red}unicorns${reset}`;
 	const endOut = cliTruncate(text, 5, {truncationCharacter: '.'});
 	const startOut = cliTruncate(text, 5, {position: 'start', truncationCharacter: '.'});
-	t.true(endOut.startsWith(red));
-	t.true(endOut.includes('.'));
-	t.true(endOut.endsWith(reset));
-	t.true(startOut.startsWith(red));
-	t.true(startOut.includes('.'));
-	t.true(startOut.endsWith(reset));
+	assert.ok(endOut.startsWith(red));
+	assert.ok(endOut.includes('.'));
+	assert.ok(endOut.endsWith(reset));
+	assert.ok(startOut.startsWith(red));
+	assert.ok(startOut.includes('.'));
+	assert.ok(startOut.endsWith(reset));
 });
 
-test('styled truncation character inherits for start and end', t => {
-	const red = '\u001B[31m';
-	const cyan = '\u001B[36m';
-	const reset = '\u001B[39m';
+test('styled truncation character inherits for start and end', () => {
+	const red = '\u{1B}[31m';
+	const cyan = '\u{1B}[36m';
+	const reset = '\u{1B}[39m';
 
 	// Test end position
 	const endText = `${red}unicorns${reset}`;
 	const endOut = cliTruncate(endText, 5);
-	t.is(endOut, `${red}unic…${reset}`);
+	assert.equal(endOut, `${red}unic…${reset}`);
 
 	// Test start position
 	const startText = `hello ${cyan}unicorns${reset}`;
 	const startOut = cliTruncate(startText, 5, {position: 'start'});
-	t.true(startOut.startsWith(cyan));
-	t.true(startOut.includes('…'));
-	t.true(startOut.endsWith(reset));
+	assert.ok(startOut.startsWith(cyan));
+	assert.ok(startOut.includes('…'));
+	assert.ok(startOut.endsWith(reset));
 });
 
-test('edge cases', t => {
+test('edge cases', () => {
 	// Empty string
-	t.is(cliTruncate('', 5), '');
+	assert.equal(cliTruncate('', 5), '');
 
 	// Whitespace only
-	t.is(cliTruncate('     ', 3), '  …');
+	assert.equal(cliTruncate(' '.repeat(5), 3), '  …');
 
 	// Multiple ANSI codes
-	const multiAnsi = '\u001B[31m\u001B[1municorns\u001B[22m\u001B[39m';
-	t.is(cliTruncate(multiAnsi, 5), '\u001B[31m\u001B[1munic…\u001B[22m\u001B[39m');
+	const multiAnsi = '\u{1B}[31m\u{1B}[1municorns\u{1B}[22m\u{1B}[39m';
+	assert.equal(cliTruncate(multiAnsi, 5), '\u{1B}[31m\u{1B}[1munic…\u{1B}[22m\u{1B}[39m');
 
 	// Columns = 2
-	t.is(cliTruncate('test', 2), 't…');
+	assert.equal(cliTruncate('test', 2), 't…');
 
 	// Very long truncation character
-	t.is(cliTruncate('unicorns', 5, {truncationCharacter: '...'}), 'un...');
+	assert.equal(cliTruncate('unicorns', 5, {truncationCharacter: '...'}), 'un...');
 });
 
-test('preserves ANSI escape codes at the end - issue #24', t => {
-	const red = '\u001B[31m';
-	const reset = '\u001B[39m';
+test('preserves ANSI escape codes at the end - issue #24', () => {
+	const red = '\u{1B}[31m';
+	const reset = '\u{1B}[39m';
 
 	// Text with ANSI codes at the end
 	const text = `Hello ${red}World${reset}`;
 
 	// When not truncated, preserve everything
-	t.is(cliTruncate(text, 11), `Hello ${red}World${reset}`);
+	assert.equal(cliTruncate(text, 11), `Hello ${red}World${reset}`);
 
 	// When truncated at the end, ellipsis should inherit the style
-	t.is(cliTruncate(text, 8), `Hello ${red}W…${reset}`);
+	assert.equal(cliTruncate(text, 8), `Hello ${red}W…${reset}`);
 
 	// When truncated at start
-	t.is(cliTruncate(text, 8, {position: 'start'}), `…o ${red}World${reset}`);
+	assert.equal(cliTruncate(text, 8, {position: 'start'}), `…o ${red}World${reset}`);
 
 	// Text ending with reset only
 	const textEndingWithReset = `Hello World${reset}`;
-	t.is(cliTruncate(textEndingWithReset, 11), `Hello World${reset}`);
-	t.is(cliTruncate(textEndingWithReset, 8), 'Hello W…');
+	assert.equal(cliTruncate(textEndingWithReset, 11), `Hello World${reset}`);
+	assert.equal(cliTruncate(textEndingWithReset, 8), 'Hello W…');
 });
 
-test('wide characters should not exceed maxWidth - issue #28', t => {
+test('wide characters should not exceed maxWidth - issue #28', () => {
 	const cjk = 'あいうえおかきくけこ|end';
 
 	for (let columns = 1; columns <= 25; columns++) {
 		const result = cliTruncate(cjk, columns);
-		t.true(stringWidth(result) <= columns, `end: width ${stringWidth(result)} exceeds maxWidth ${columns} for result "${result}"`);
+		assert.ok(stringWidth(result) <= columns, `end: width ${stringWidth(result)} exceeds maxWidth ${columns} for result "${result}"`);
 	}
 
 	for (let columns = 1; columns <= 25; columns++) {
 		const result = cliTruncate(cjk, columns, {position: 'start'});
-		t.true(stringWidth(result) <= columns, `start: width ${stringWidth(result)} exceeds maxWidth ${columns} for result "${result}"`);
+		assert.ok(stringWidth(result) <= columns, `start: width ${stringWidth(result)} exceeds maxWidth ${columns} for result "${result}"`);
 	}
 
 	for (let columns = 1; columns <= 25; columns++) {
 		const result = cliTruncate(cjk, columns, {position: 'middle'});
-		t.true(stringWidth(result) <= columns, `middle: width ${stringWidth(result)} exceeds maxWidth ${columns} for result "${result}"`);
+		assert.ok(stringWidth(result) <= columns, `middle: width ${stringWidth(result)} exceeds maxWidth ${columns} for result "${result}"`);
 	}
 });
+/* eslint-enable node-test/no-conditional-assertion */

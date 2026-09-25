@@ -116,20 +116,16 @@ export default function cliTruncate(text, columns, options = {}) {
 
 	function appendWithInheritedStyleFromEnd(visible, suffix) {
 		const start = trailingSgrSpanStartIndex(visible);
-		if (start === visible.length) {
-			return visible + suffix;
-		}
-
-		return visible.slice(0, start) + suffix + visible.slice(start);
+		return start === visible.length
+			? visible + suffix
+			: visible.slice(0, start) + suffix + visible.slice(start);
 	}
 
 	function prependWithInheritedStyleFromStart(prefix, visible) {
 		const end = leadingSgrSpanEndIndex(visible);
-		if (end === 0) {
-			return prefix + visible;
-		}
-
-		return visible.slice(0, end) + prefix + visible.slice(end);
+		return end === 0
+			? prefix + visible
+			: visible.slice(0, end) + prefix + visible.slice(end);
 	}
 
 	if (position === 'start') {
@@ -177,18 +173,17 @@ export default function cliTruncate(text, columns, options = {}) {
 		);
 	}
 
-	if (position === 'end') {
-		if (preferTruncationOnSpace) {
-			const nearestSpace = getIndexOfNearestSpace(text, columns - stringWidth(truncationCharacter));
-			const left = sliceAnsi(text, 0, nearestSpace);
-			return appendWithInheritedStyleFromEnd(left, truncationCharacter);
-		}
-
-		if (space) {
-			truncationCharacter = ` ${truncationCharacter}`;
-		}
-
-		const left = sliceAnsi(text, 0, columns - stringWidth(truncationCharacter));
+	// `position === 'end'`, the only remaining valid value.
+	if (preferTruncationOnSpace) {
+		const nearestSpace = getIndexOfNearestSpace(text, columns - stringWidth(truncationCharacter));
+		const left = sliceAnsi(text, 0, nearestSpace);
 		return appendWithInheritedStyleFromEnd(left, truncationCharacter);
 	}
+
+	if (space) {
+		truncationCharacter = ` ${truncationCharacter}`;
+	}
+
+	const left = sliceAnsi(text, 0, columns - stringWidth(truncationCharacter));
+	return appendWithInheritedStyleFromEnd(left, truncationCharacter);
 }

@@ -31,11 +31,8 @@ cliTruncate('unicorns rainbow dragons', 6, {position: 'end'});
 cliTruncate('\u001B[31municorn\u001B[39m', 4);
 //=> '\u001B[31muni…\u001B[39m'
 
-> [!NOTE]
-> When truncating styled text (ANSI escapes), the truncation character inherits the style at the breaking point for `position: 'start'` and `position: 'end'`. This does not apply to `position: 'middle'`.
-
 // Truncate Unicode surrogate pairs
-cliTruncate('uni\uD83C\uDE00corn', 5);
+cliTruncate('uni\uD83C\uDE00corn', 6);
 //=> 'uni\uD83C\uDE00…'
 
 // Truncate fullwidth characters
@@ -45,8 +42,11 @@ cliTruncate('안녕하세요', 3);
 // Truncate the paragraph to the terminal width
 const paragraph = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.';
 cliTruncate(paragraph, process.stdout.columns ?? 80);
-//=> 'Lorem ipsum dolor sit amet, consectetuer adipiscing…'
+//=> 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula…'
 ```
+
+> [!NOTE]
+> When truncating styled text (ANSI escapes), the truncation character inherits the style at the breaking point for `position: 'start'` and `position: 'end'`. This does not apply to `position: 'middle'`.
 
 ## API
 
