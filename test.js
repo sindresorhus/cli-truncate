@@ -1,3 +1,4 @@
+import {stripVTControlCharacters} from 'node:util';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import stringWidth from 'string-width';
@@ -94,6 +95,46 @@ test('preferTruncationOnSpace option', () => {
 	for (const columns of [2, 3, 4, 5, 6, 7]) {
 		assert.ok(stringWidth(cliTruncate('unicorns', columns, {position: 'middle', space: true, preferTruncationOnSpace: true})) <= columns, `width <= ${columns}`);
 	}
+});
+
+test('preferTruncationOnSpace picks the same word boundaries for styled text', () => {
+	const red = '\u{1B}[31m';
+	const reset = '\u{1B}[39m';
+	const bold = '\u{1B}[1m';
+	const boldReset = '\u{1B}[22m';
+	const link = '\u{1B}]8;;https://sindresorhus.com\u{7}';
+	const linkReset = '\u{1B}]8;;\u{7}';
+	const text = 'unicorns are  awesome dragons';
+	const styledTexts = [
+		`${red}unicorns${reset} are  ${red}awesome${reset} dragons`,
+		`unicorns${red} are  awesome ${reset}dragons`,
+		`${bold}${red}unicorns are${reset}${boldReset}  awesome${red}${reset} dragons`,
+		`unicorns ${link}are  awesome${linkReset} dragons`,
+	];
+
+	for (const styledText of styledTexts) {
+		for (const position of ['start', 'middle', 'end']) {
+			for (const extraOptions of [{}, {space: true}, {truncationCharacter: '...'}]) {
+				for (let columns = 4; columns < stringWidth(text); columns++) {
+					const options = {position, preferTruncationOnSpace: true, ...extraOptions};
+					const result = cliTruncate(styledText, columns, options);
+					const message = `${JSON.stringify(styledText)} ${JSON.stringify(options)} columns: ${columns}`;
+					assert.equal(stripVTControlCharacters(result), cliTruncate(text, columns, options), message);
+					assert.ok(stringWidth(result) <= columns, message);
+				}
+			}
+		}
+	}
+});
+
+test('preferTruncationOnSpace keeps the styling of styled text', () => {
+	const red = '\u{1B}[31m';
+	const reset = '\u{1B}[39m';
+	const text = `${red}unicorns are awesome${reset}`;
+
+	assert.equal(cliTruncate(text, 15, {position: 'start', preferTruncationOnSpace: true}), `${red}…are awesome${reset}`);
+	assert.equal(cliTruncate(text, 15, {position: 'middle', preferTruncationOnSpace: true}), `${red}unicorn${reset}…${red}awesome${reset}`);
+	assert.equal(cliTruncate(text, 15, {position: 'end', preferTruncationOnSpace: true}), `${red}unicorns are…${reset}`);
 });
 
 test('truncationCharacter option', () => {

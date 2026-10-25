@@ -1,3 +1,4 @@
+import {stripVTControlCharacters} from 'node:util';
 import sliceAnsi from 'slice-ansi';
 import stringWidth from 'string-width';
 
@@ -18,6 +19,15 @@ function getIndexOfNearestSpace(string, wantedIndex, shouldSearchRight) {
 	}
 
 	return wantedIndex;
+}
+
+// Skip the spaces at the slice boundary, since `.trim()` does not remove spaces that come after an ANSI escape code.
+function getIndexAfterSpaces(string, index) {
+	while (string.charAt(index) === ' ') {
+		index++;
+	}
+
+	return index;
 }
 
 function validateInput(text, columns, position, truncationCharacter) {
@@ -66,6 +76,9 @@ export default function cliTruncate(text, columns, options = {}) {
 	if (columns === 1) {
 		return truncationCharacter;
 	}
+
+	// Look for spaces in the visible text, as the space search uses visible indexes and ANSI escape codes would shift them.
+	const visibleText = stripVTControlCharacters(text);
 
 	// ANSI escape sequence constants
 	const ANSI = {
@@ -130,8 +143,8 @@ export default function cliTruncate(text, columns, options = {}) {
 
 	if (position === 'start') {
 		if (preferTruncationOnSpace) {
-			const nearestSpace = getIndexOfNearestSpace(text, length - columns + stringWidth(truncationCharacter), true);
-			const right = sliceAnsi(text, nearestSpace, length).trim();
+			const nearestSpace = getIndexOfNearestSpace(visibleText, length - columns + stringWidth(truncationCharacter), true);
+			const right = sliceAnsi(text, getIndexAfterSpaces(visibleText, nearestSpace), length).trim();
 			return prependWithInheritedStyleFromStart(truncationCharacter, right);
 		}
 
@@ -161,9 +174,9 @@ export default function cliTruncate(text, columns, options = {}) {
 		const half = Math.min(Math.floor(columns / 2), Math.max(0, columns - truncationWidth));
 
 		if (preferTruncationOnSpace) {
-			const spaceNearFirstBreakPoint = getIndexOfNearestSpace(text, half);
-			const spaceNearSecondBreakPoint = getIndexOfNearestSpace(text, length - (columns - half) + truncationWidth, true);
-			return sliceAnsi(text, 0, spaceNearFirstBreakPoint) + truncationCharacter + sliceAnsi(text, spaceNearSecondBreakPoint, length).trim();
+			const spaceNearFirstBreakPoint = getIndexOfNearestSpace(visibleText, half);
+			const spaceNearSecondBreakPoint = getIndexOfNearestSpace(visibleText, length - (columns - half) + truncationWidth, true);
+			return sliceAnsi(text, 0, spaceNearFirstBreakPoint) + truncationCharacter + sliceAnsi(text, getIndexAfterSpaces(visibleText, spaceNearSecondBreakPoint), length).trim();
 		}
 
 		return (
@@ -175,7 +188,7 @@ export default function cliTruncate(text, columns, options = {}) {
 
 	// `position === 'end'`, the only remaining valid value.
 	if (preferTruncationOnSpace) {
-		const nearestSpace = getIndexOfNearestSpace(text, columns - stringWidth(truncationCharacter));
+		const nearestSpace = getIndexOfNearestSpace(visibleText, columns - stringWidth(truncationCharacter));
 		const left = sliceAnsi(text, 0, nearestSpace);
 		return appendWithInheritedStyleFromEnd(left, truncationCharacter);
 	}
