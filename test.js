@@ -137,6 +137,33 @@ test('preferTruncationOnSpace keeps the styling of styled text', () => {
 	assert.equal(cliTruncate(text, 15, {position: 'end', preferTruncationOnSpace: true}), `${red}unicorns are…${reset}`);
 });
 
+test('preferTruncationOnSpace picks word boundaries by column for wide characters', () => {
+	assert.equal(cliTruncate('你好世界你好 are awesome', 18, {position: 'end', preferTruncationOnSpace: true}), '你好世界你好 are…');
+	assert.equal(cliTruncate('你好世界你好 are awesome', 10, {position: 'start', preferTruncationOnSpace: true}), '…awesome');
+	assert.equal(cliTruncate('你好世界你好 are awesome', 18, {position: 'middle', preferTruncationOnSpace: true}), '你好世界…awesome');
+
+	// Combining marks use more string indexes than columns, which shifts the indexes the other way.
+	const precomposed = 'café crème brûlée unicorns';
+	const decomposed = precomposed.normalize('NFD');
+	for (const position of ['start', 'middle', 'end']) {
+		for (let columns = 4; columns < stringWidth(precomposed); columns++) {
+			const options = {position, preferTruncationOnSpace: true};
+			assert.equal(cliTruncate(decomposed, columns, options).normalize('NFC'), cliTruncate(precomposed, columns, options), `${position}: ${columns}`);
+		}
+	}
+});
+
+test('preferTruncationOnSpace keeps trailing spaces the same for plain and styled text', () => {
+	const red = '\u{1B}[31m';
+	const reset = '\u{1B}[39m';
+	const text = 'unicorns are awesome  ';
+
+	assert.equal(cliTruncate(text, 14, {position: 'start', preferTruncationOnSpace: true}), '…awesome  ');
+	assert.equal(cliTruncate(text, 14, {position: 'middle', preferTruncationOnSpace: true}), 'unicorn…some  ');
+	assert.equal(cliTruncate(`${red}${text}${reset}`, 14, {position: 'start', preferTruncationOnSpace: true}), `${red}…awesome  ${reset}`);
+	assert.equal(cliTruncate(`${red}${text}${reset}`, 14, {position: 'middle', preferTruncationOnSpace: true}), `${red}unicorn${reset}…${red}some  ${reset}`);
+});
+
 test('truncationCharacter option', () => {
 	assert.equal(cliTruncate('unicorns', 5, {position: 'end', truncationCharacter: '.'}), 'unic.');
 	assert.equal(cliTruncate('unicorns', 5, {position: 'start', truncationCharacter: '.'}), '.orns');
