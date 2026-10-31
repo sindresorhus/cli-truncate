@@ -37,7 +37,7 @@
 		"string"
 	],
 	"dependencies": {
-		"slice-ansi": "^9.0.1",
+		"slice-ansi": "^10.0.0",
 		"string-width": "^8.3.0"
 	},
 	"devDependencies": {

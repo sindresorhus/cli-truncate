@@ -153,6 +153,12 @@ test('preferTruncationOnSpace picks word boundaries by column for wide character
 	}
 });
 
+test('preferTruncationOnSpace counts zero-width characters as no columns', () => {
+	assert.equal(cliTruncate('ab\tcd ef gh ij kl mn', 6, {position: 'end', preferTruncationOnSpace: true}), 'ab\tcd…');
+	assert.equal(cliTruncate('ab\tcd ef gh ij kl mn', 3, {position: 'start', preferTruncationOnSpace: true}), '…mn');
+	assert.equal(cliTruncate('ab\u{200B}cd ef gh ij kl', 6, {position: 'end', preferTruncationOnSpace: true}), 'ab\u{200B}cd…');
+});
+
 test('preferTruncationOnSpace keeps trailing spaces the same for plain and styled text', () => {
 	const red = '\u{1B}[31m';
 	const reset = '\u{1B}[39m';
